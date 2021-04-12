@@ -1,0 +1,58 @@
+<h1>Cursos Propuestos:</h1>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4" *ngIf="role.id == 3">
+        <ng-template pTemplate="left">
+            <button [routerLink]="['/cecy/forms']" type="button" label="Nuevo curso" pButton icon="pi pi-plus-circle" iconPos="right"></button>
+        </ng-template>
+    </p-toolbar>
+    <h5>listado de Cursos</h5>
+    <p-table [value]="lista_cursos" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
+        currentPageReportTemplate="Visualizando registro {first} al {last} de {totalRecords} cursos" [rowsPerPageOptions]="[10,25,50]">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Fecha de Creación</th>
+                <th>Nombre</th>
+                <th>Estatus</th>
+                <th>Código</th>
+                <th colspan="2">Opciones</th>
+                <!-- <th>Docente</th> -->
+                <!--<th>Duración</th> -->
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-curso>
+            <tr>
+                <td>{{ curso.created_at | date:'yyyy-MM-dd  HH:mm:ss'}}</td>
+                <td>{{ curso.name }}</td>
+                <td *ngIf="curso.status == 1"> <b>GENERADO</b> </td>
+                <td *ngIf="curso.status == 2"> <b>APROBADO</b> </td>
+                <td *ngIf="curso.status == 3"> <b>INACTIVO</b> </td>
+                <td *ngIf="curso.status == 4"> <b>RECHAZADO</b> </td>
+                <td>{{ curso.code}}</td>
+                <td *ngIf="role.id == 3">
+                    <button type="button" pButton label="Editar" (click)="modificarCurso(curso)"></button>
+                </td>
+                <td *ngIf="role.id == 3">
+                    <button type="button" pButton label="Visualizar" (click)="visualizarCurso(curso)"></button>
+                </td>
+                <td *ngIf="role.id == 12 && curso.status == 1">
+                    <button type="button" pButton label="Planificación" class="p-button-warning" (click)="planificarCurso(curso)"></button>
+                </td>
+                <td *ngIf="role.id == 12 && curso.status == 2">
+                    <span style="color: darkgreen;"><b>Plafinicación Agredada</b></span>
+                </td>
+                <td *ngIf="role.id == 12">
+                    <button type="button" pButton label="Eliminar" class="p-button-danger"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-table>
+
+</div>
+

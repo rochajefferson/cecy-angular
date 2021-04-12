@@ -1,0 +1,42 @@
+<div class="p-grid ui-fluid">
+    <form [formGroup]="form" novalidate class="p-grid">
+        <div class="p-col-6">
+            <label for="titulo">Titulo:</label>
+        </div>
+        <div class="p-col-6">
+            <label for="codigo">Codigo:</label>
+        </div>
+        <div class="p-col-2 p-sm-6">
+            <input formControlName="title" type="text" pInputText placeholder="Titulo">
+        </div>
+        <div class="p-col-2 p-sm-6">
+            <input formControlName="code" type="text" pInputText placeholder="Codigo">
+        </div>
+        <div class="p-col-6">
+            <label for="assignedLine">Linea de investigación:</label>
+        </div>
+        <div class="p-col-6">
+            <label for="campo">Campo:</label>
+        </div>
+        <div class="p-col-2 p-sm-6">
+            <p-autoComplete formControlName="assigned_line" [suggestions]="assignedLines"
+                (completeMethod)="filterAssignedLines($event)" [size]="30" [minLength]="1" [dropdown]="true">
+                <ng-template let-assignedLine pTemplate="item">
+                    <div class="ui-helper-clearfix">
+                        <div style="font-size:18px;margin:10px 10px 0 0">{{assignedLine.name}}</div>
+                    </div>
+                </ng-template>
+            </p-autoComplete>
+        </div>
+        <div class="p-col-2 p-sm-6">
+            <p-autoComplete formControlName="field" [suggestions]="suggestions"
+                (completeMethod)="completeMethod($event)" [size]="30" [minLength]="1" [dropdown]="true">
+                <ng-template let-assignedLine pTemplate="item">
+                    <div class="ui-helper-clearfix">
+                        <div style="font-size:18px;margin:10px 10px 0 0">{{assignedLine}}</div>
+                    </div>
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </form>
+</div>

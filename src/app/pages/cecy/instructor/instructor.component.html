@@ -1,0 +1,43 @@
+<div class="landing-body">
+    <div id="meet-mirage" class="section">
+        <div class="section-title">
+            <h1>Instituto Superior Tecnológico Yavirac</h1>
+            <p>¡Fortaleciendo Capacidades!</p>
+        </div>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="feature-card-img">
+                    <i class="pi pi-list" style="font-size: 5em"></i>
+                </div>
+                <div class="feature-card-title">Cursos</div>
+                <div class="feature-card-content">Listado de cursos propuestos</div>
+                <div class="feature-card-content">
+                    <button type="button" label="Entrar" pButton icon="pi pi-users"
+                    [routerLink]="['/cecy/courses']"></button>
+                </div>
+            </div>
+            <div class="feature-card" *ngIf="role.id == 3">
+                <div class="feature-card-img">
+                    <i class="pi pi-users" style="font-size: 5em"></i>
+                </div>
+                <div class="feature-card-title">Nuevo Registro</div>
+                <div class="feature-card-content">Registrar nuevo cursos</div>
+                <div class="feature-card-content">
+                    <button type="button" label="Entrar" pButton icon="pi pi-sign-in"
+                    [routerLink]="['/cecy/forms']"></button>
+                </div>
+            </div>
+            <div class="feature-card" *ngIf="role.id == 12">
+                <div class="feature-card-img">
+                    <i class="pi pi-users" style="font-size: 5em"></i>
+                </div>
+                <div class="feature-card-title">Nuevo Registro de Usuarios</div>
+                <div class="feature-card-content">Registrar usuarios externos</div>
+                <div class="feature-card-content">
+                    <button type="button" label="Entrar" pButton icon="pi pi-sign-in"
+                    [routerLink]="['/cecy/forms']"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

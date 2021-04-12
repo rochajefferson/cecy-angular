@@ -1,0 +1,23 @@
+<div class="p-grid ui-fluid">
+    <<form [formGroup]="form_observacion"  class="p-grid" novalidate>
+        <div class="p-grid ui-fluid">
+            <div class="p-col-12">
+                <label>Observaciones para la aceptación de documentos de vinculación:</label>
+            </div>
+            <div class="p-col-2 p-sm-4">
+                <textarea formControlName="observaciones" [disabled]="observacionEditable" 
+                [rows]="5" [cols]="100" pInputTextarea
+                placeholder="Escriba todas las observaciones a corregir para la aprobación del proyecto de vinculación"
+                autoResize="autoResize"></textarea>
+            </div>               
+        </div>
+        <div class="p-col-2 p-sm-4">
+            <button pButton type="" [disabled]="" label="Finalizar"
+                icon="pi pi-check"></button>
+        </div>  
+    </form>  
+</div>
+
+
+
+
