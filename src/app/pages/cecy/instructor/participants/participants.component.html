@@ -1,0 +1,129 @@
+<p-toast key="msgToast"></p-toast>
+
+<p-card>
+    <ng-template pTemplate="header">
+        <h2>Registro Participantes</h2>
+    </ng-template>
+    <div style="text-align: center;">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <span class="p-input-icon-left" style="width: 50% !important;">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" [(ngModel)]="identificacion" 
+                    placeholder="Buscar participante por número de identificación" 
+                    style="width: 100%;" (keyup)="identificacion = formatoCampo(identificacion, '0123456789', 10, 2);">
+                </span>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row" style="margin-top: 50px !important;">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <button type="button" label="Nuevo Participante" pButton icon="pi pi-plus-circle" iconPos="right" (click)="verificarIdentificacion()"></button>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        
+    </ng-template>
+</p-card>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Agregar Participante</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">       
+        <div class="p-col-12">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-4">
+                    <label for="period"><b>Tipo de Identificación</b></label>
+                    <p-dropdown [options]="list_academic_period" optionLabel="name"
+                        placeholder="Seleccione el tipo de identificación" ></p-dropdown>
+                </div>
+                <div class="p-field p-col-4">
+                    <label><b>Numero de Identificación</b></label>
+                    <input type="text" pInputText placeholder="Ingrese el numero de identificación"
+                      class="p-text-uppercase">
+                </div>
+                <div class="p-field p-col-4">
+                    <label for="name"><b>Primer Nombre</b></label>
+                    <input id="name" type="text" pInputText placeholder="Ingrese el primer nombre"
+                        class="p-text-uppercase">
+                </div>                       
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-4">
+                    <label for="name"><b>Segundo Nombre</b></label>
+                    <input id="name" type="text" pInputText placeholder="Ingrese el segundo nombre"
+                        class="p-text-uppercase">
+                </div>
+                <div class="p-field p-col-4">
+                    <label for="name"><b>Primer Apellido</b></label>
+                    <input id="name" type="text" pInputText placeholder="Ingrese el primer apellido"
+                        class="p-text-uppercase">
+                </div>
+                <div class="p-field p-col-4">
+                    <label for="name"><b>Segundo Apellido</b></label>
+                    <input id="name" type="text" pInputText placeholder="Ingrese el segundo apellido"
+                        class="p-text-uppercase">
+                </div>               
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-4">
+                    <label for="period"><b>Tipo de Género</b></label>
+                    <p-dropdown [options]="list_academic_period" optionLabel="name"
+                        placeholder="Seleccione el tipo de género" ></p-dropdown>
+                </div>
+                <div class="p-field p-col-4">
+                    <label for="period"><b>Tipo de Etnia</b></label>
+                    <p-dropdown [options]="list_academic_period" optionLabel="name"
+                        placeholder="Seleccione el tipo de etnia" ></p-dropdown>
+                </div>
+                <div class="p-field p-col-4">
+                    <label><b>Dirección Domiciliaria</b></label>
+                    <input type="text" pInputText placeholder="Ingrese la dirección domiciliaria"
+                      class="p-text-uppercase">
+                </div>                                     
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-fluid p-formgrid p-grid">               
+               <div class="p-field p-col-4">
+                    <label><b>Correo Eléctronico</b></label>
+                    <input type="text" pInputText placeholder="Ingrese su correo eléctronico"
+                      class="p-text-uppercase">
+                </div>   
+                <div class="p-field p-col-4">
+                    <label><b>Nombre de Usuario</b></label>
+                    <input type="text" pInputText placeholder="Ingrese su nombre de usuario"
+                      class="p-text-uppercase">
+                </div>   
+                <div class="p-field p-col-4">
+                    <label><b>Fecha de Nacimiento</b></label>
+                    <p-calendar 
+                    (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
+                    placeholder="Ingrese la fecha de nacimiento"></p-calendar>
+                </div>                               
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" 
+          data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarParticipante()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>

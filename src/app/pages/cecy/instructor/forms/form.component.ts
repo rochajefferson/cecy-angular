@@ -35,11 +35,12 @@ export class FormsComponent implements OnInit {
     classroom: '',
     hours_duration: '',
     capacity: '',
+    abbreviation: '',
     place: '',
     resume: '',
-    career: '',
+    career_id: '',
     teacher: '',
-    course_period: '',
+    course_period_id: '',
     user_id: 0,
     username: '',
     course_type: '',
@@ -49,41 +50,54 @@ export class FormsComponent implements OnInit {
     start_time: '',
     day: '',
     participant_type: '',
-    lista_necesidades: '',
+    list_needs: '',
     photo: '',
-    WORKDAY_TYPE: '',
+    workday_type: '',
     area: '',
     specialty: '',
     status_cecy: '',
-    lista_requisitos: '',
-    lista_prerequisitos: '',
-    lista_temas_principales: '',
-    lista_temas_secundarios: '',
-    lista_temas_transversales: '',
-    lista_evaluaciones_diagnosticas: '',
-    lista_evaluaciones_procesos: '',
-    lista_evaluaciones_finales: '',
+    list_requeriments: '',
+    list_prerequisites: '',
+    list_main_topics: '',
+    list_subtopics: '',
+    list_cross_topics: '',
+    list_evaluations_diagnostic: '',
+    list_evaluations_process: '',
+    list_evaluations_final: '',
     practice_hours: '',
     theory_hours: '',
-    lista_bibliografias: '',
-    lista_instalaciones: '',
-    lista_fases_teoricas: '',
-    lista_fases_practicas: '',
+    list_bibliographic: '',
+    list_facilities: '',
+    list_phase_theore: '',
+    list_phase_practical: '',
     observation: '',
+    objective: '',
+    project: '',
+    list_required_installing_sources: '',
+    list_practice_required_resources: '',
+    list_aimtheory_required_resources: '',
+    list_learning_teaching_strategy: '',
+    list_teaching_strategies: '',    
 
   }
 
   public planning: any = {
     course_id: 0,
+    planning_id: 0,
     code: '',
-    record: '',
-    fechaCreacion: '',
+    dateCreation: '',
     school_period_id: '',
     teacher_id: '',
-    lista_necesidades_planning: '',
-    fechaInicio: '',
-    fechaFinalizacion: '',
-    fechaFinal: '',
+    list_needs_planning: ''
+  }
+
+  public plannig_details: any = {
+    course_id: 0,
+    planning_id: 0,
+    plannig_details_id: 0,
+    dateStart: '',
+    dateEnd: '',
+    dateFinal: '',
     days: '',
     develop_day_id: '',
     start_time_id: '',
@@ -103,10 +117,10 @@ export class FormsComponent implements OnInit {
 
   url_combo = "combo";
 
-  list_carrers = [];
+  list_carrer = [];
   list_school_period = [];
   list_classroom = [];
-  list_academic_periods = [];
+  list_academic_period = [];
   list_course_type = [];
   list_modality = [];
   list_participant_type = [];
@@ -118,8 +132,9 @@ export class FormsComponent implements OnInit {
   list_start_time = [];
   list_day = [];
   list_teacher = [];
-  list_WORKDAY_TYPE = [];
+  list_workday_type = [];
   list_courses_existing = [];
+  list_planning_details = [];
 
   necesidades: Necesidad[] = [];
   necesidadText: any;
@@ -145,6 +160,21 @@ export class FormsComponent implements OnInit {
   temasTransversales: Requisito[] = [];
   transversalText: any;
 
+  recursosRequeridos: Requisito[] = [];
+  recursoText: any;
+
+  recursosPracticas: Requisito[] = [];
+  recursoPracticaText: any;
+
+  recursosTeoricos: Requisito[] = [];
+  recursoTeoricoText: any;
+
+  estrategiasAprendizajes: Requisito[] = [];
+  estrategiaAprendizajeText: any;
+
+  estrategiasEnsenanzas: Requisito[] = [];
+  estrategiaEnsenanzaText: any;
+
   instalaciones: Requisito[] = [];
   instalacionText: any;
 
@@ -168,7 +198,6 @@ export class FormsComponent implements OnInit {
     instrumento: ''
   }
 
-
   evaluacionesFinales: any = [];
   evaluacionFinal: any = {
     tecnica: '',
@@ -176,7 +205,6 @@ export class FormsComponent implements OnInit {
   }
 
   imagenCurso: any;
-
   carreraSeleccionada: any;
   fechaInicioSeleccionado: any;
   fechaFinSeleccionado: any;
@@ -199,23 +227,32 @@ export class FormsComponent implements OnInit {
   botonGuardar = true;
   botonModificar = false;
 
+  botonGuardarPlanificacion = true;
+  botonModificarPlanificacion = false;
+
   variableConfiguracion: any;
   variableVisualizacion = false;
+  variableVisualizacionPlanificacion = false;
 
   visualizarPlanificacion = false;
+  visualizarDetallePlanificacion = false;
+
+  idCurso: any;
+  idPlanning: any;
+
 
   constructor(
-    private cecyService: CecyService, 
+    private cecyService: CecyService,
     private formBuilder: FormBuilder,
-    private messageService: MessageService, 
-    private _router: Router, 
-    private globales: GlobalsService, 
+    private messageService: MessageService,
+    private _router: Router,
+    private globales: GlobalsService,
     public activatedRouter: ActivatedRoute,
     private _spinner: NgxSpinnerService,
-    ) {}
+  ) { }
 
   ngOnInit() {
-    this.planning.fechaCreacion = new Date();
+    this.planning.dateCreation = new Date();
     this.getLocalStorage();
   }
 
@@ -229,9 +266,13 @@ export class FormsComponent implements OnInit {
 
   varidarInformacion() {
     var datos: any = this.activatedRouter.snapshot;
+
     if (datos.url.length != 0) {
-      var idCurso = this.activatedRouter.snapshot.params.id;
+      this.idCurso = this.activatedRouter.snapshot.params.id;
       this.variableConfiguracion = this.activatedRouter.snapshot.url[0].path == null ? '' : this.activatedRouter.snapshot.url[0].path;
+
+      console.log('variableConfiguracion', this.variableConfiguracion);
+      console.log('idCurso', this.idCurso);
 
       if (this.role.id == 3) {
         this.visualizarPlanificacion = false;
@@ -239,26 +280,54 @@ export class FormsComponent implements OnInit {
         this.visualizarPlanificacion = true;
       }
 
-      if (idCurso == undefined) {
+      if (this.idCurso == undefined) {
         this.listarCombos();
         this.botonGuardar = true;
         this.botonModificar = false;
         this.variableVisualizacion = false;
-      } else if (idCurso != undefined && this.variableConfiguracion == 'edit') {
-        this.cargarDatosFormulario(idCurso);
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'edit') {
+        this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
         this.botonModificar = true;
         this.variableVisualizacion = false;
-      } else if (idCurso != undefined && this.variableConfiguracion == 'view') {
-        this.cargarDatosFormulario(idCurso);
+        this.variableVisualizacionPlanificacion = true;
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'view') {
+        this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
         this.botonModificar = false;
         this.variableVisualizacion = true;
-      } else if (idCurso != undefined && this.variableConfiguracion == 'planning') {
-        this.cargarDatosFormulario(idCurso);
+        this.variableVisualizacionPlanificacion = true;
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning-curso') {
+        this.cargarDatosFormulario(this.idCurso);
+        this.botonGuardar = false;
+        this.botonModificar = false;
+        this.botonGuardarPlanificacion = false;
+        this.botonModificarPlanificacion = false;
+        this.variableVisualizacionPlanificacion = true;
+        this.variableVisualizacion = true;
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning') {
+        this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
         this.botonModificar = false;
         this.variableVisualizacion = true;
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning-view') {
+        this.cargarDatosFormularioPlanning(this.idCurso);
+        this.botonGuardar = false;
+        this.botonModificar = false;
+        this.botonGuardarPlanificacion = false;
+        this.botonModificarPlanificacion = false;
+        this.variableVisualizacion = true;
+        this.visualizarDetallePlanificacion = false;
+        this.variableVisualizacionPlanificacion = true;
+      } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning-edit') {
+        this.cargarDatosFormularioPlanning(this.idCurso);
+        this.botonGuardar = false;
+        this.botonModificar = false;
+        this.botonGuardarPlanificacion = false;
+        this.botonModificarPlanificacion = true;
+        this.variableVisualizacion = true;
+        this.variableVisualizacionPlanificacion = false;
+        this.visualizarDetallePlanificacion = true;
       }
 
     } else {
@@ -276,22 +345,80 @@ export class FormsComponent implements OnInit {
     this.cecyService.post("edit", data, "").subscribe(
       (res: any) => {
         var cursoRecuperado = res[0];
-        this.curso = cursoRecuperado;
+        this.curso = cursoRecuperado;  
+        this.curso.code = cursoRecuperado.code;
         this.nombreDocente = cursoRecuperado.username;
         this.imagenCurso = cursoRecuperado.photo;
-        this.necesidades = JSON.parse(cursoRecuperado.lista_necesidades);
-        this.requisitos = JSON.parse(cursoRecuperado.lista_requisitos);
-        this.prerequisitos = JSON.parse(cursoRecuperado.lista_prerequisitos);
-        this.temasPrincipales = JSON.parse(cursoRecuperado.lista_temas_principales);
-        this.temasSecundarios = JSON.parse(cursoRecuperado.lista_temas_secundarios);
-        this.temasTransversales = JSON.parse(cursoRecuperado.lista_temas_transversales);
-        this.evaluacionesDiagnosticas = JSON.parse(cursoRecuperado.lista_evaluaciones_diagnosticas);
-        this.evaluacionesProcesos = JSON.parse(cursoRecuperado.lista_evaluaciones_procesos);
-        this.evaluacionesFinales = JSON.parse(cursoRecuperado.lista_evaluaciones_finales);
-        this.instalaciones = JSON.parse(cursoRecuperado.lista_instalaciones);
-        this.fasesTeoricas = JSON.parse(cursoRecuperado.lista_fases_teoricas);
-        this.fasesPracticas = JSON.parse(cursoRecuperado.lista_fases_practicas);
-        this.bibliografias = JSON.parse(cursoRecuperado.bibliographys);
+        this.necesidades = JSON.parse(cursoRecuperado.list_needs);
+        this.requisitos = JSON.parse(cursoRecuperado.list_requeriments);
+        this.prerequisitos = JSON.parse(cursoRecuperado.list_prerequisites);
+        this.temasPrincipales = JSON.parse(cursoRecuperado.list_main_topics);
+        this.temasSecundarios = JSON.parse(cursoRecuperado.list_subtopics);
+        this.temasTransversales = JSON.parse(cursoRecuperado.list_cross_topics);
+        this.recursosRequeridos = JSON.parse(cursoRecuperado.list_required_installing_sources);
+        this.evaluacionesDiagnosticas = JSON.parse(cursoRecuperado.list_evaluations_diagnostic);
+        this.evaluacionesProcesos = JSON.parse(cursoRecuperado.list_evaluations_process);
+        this.evaluacionesFinales = JSON.parse(cursoRecuperado.list_evaluations_final);   
+        this.instalaciones = JSON.parse(cursoRecuperado.list_facilities);     
+        this.recursosPracticas = JSON.parse(cursoRecuperado.list_practice_required_resources);
+        this.recursosTeoricos = JSON.parse(cursoRecuperado.list_aimtheory_required_resources);
+        this.estrategiasAprendizajes = JSON.parse(cursoRecuperado.list_learning_teaching_strategy);
+        this.estrategiasEnsenanzas = JSON.parse(cursoRecuperado.list_teaching_strategies);
+        this.fasesTeoricas = JSON.parse(cursoRecuperado.list_phase_theore);
+        this.fasesPracticas = JSON.parse(cursoRecuperado.list_phase_practical);
+        this.bibliografias = JSON.parse(cursoRecuperado.list_bibliographic);      
+        this.listarCombosEdicion(cursoRecuperado); 
+     
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  public cargarDatosFormularioPlanning(idCurso: any) {
+    var data: any = {
+      id: idCurso
+    }
+    this.cecyService.post("planning/edit", data, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        var cursoRecuperado = res[0];
+        this.idPlanning = cursoRecuperado.planning_id;
+        this.curso.name = cursoRecuperado.name;   
+        this.curso.code = cursoRecuperado.code;   
+        this.curso.cost = cursoRecuperado.cost;
+        this.curso.hours_duration = cursoRecuperado.hours_duration;
+        this.curso.capacity = cursoRecuperado.capacity;
+        this.curso.place = cursoRecuperado.place;
+        this.curso.resume = cursoRecuperado.resume;
+        this.curso.theory_hours = cursoRecuperado.theory_hours;
+        this.curso.practice_hours = cursoRecuperado.practice_hours;
+        this.curso.observation = cursoRecuperado.observation;
+        this.curso.objective = cursoRecuperado.objective;
+        this.curso.project = cursoRecuperado.project;
+        this.planning.code = cursoRecuperado.code;
+        this.nombreDocente = cursoRecuperado.username;
+        this.imagenCurso = cursoRecuperado.photo;
+        this.necesidades = JSON.parse(cursoRecuperado.list_needs);
+        this.necesidades_planning = JSON.parse(cursoRecuperado.list_needs_planning);
+        this.requisitos = JSON.parse(cursoRecuperado.list_requeriments);
+        this.prerequisitos = JSON.parse(cursoRecuperado.list_prerequisites);
+        this.temasPrincipales = JSON.parse(cursoRecuperado.list_main_topics);
+        this.temasSecundarios = JSON.parse(cursoRecuperado.list_subtopics);
+        this.temasTransversales = JSON.parse(cursoRecuperado.list_cross_topics);
+        this.evaluacionesDiagnosticas = JSON.parse(cursoRecuperado.list_evaluations_diagnostic);
+        this.evaluacionesProcesos = JSON.parse(cursoRecuperado.list_evaluations_process);
+        this.evaluacionesFinales = JSON.parse(cursoRecuperado.list_evaluations_final);
+        this.instalaciones = JSON.parse(cursoRecuperado.list_facilities);
+        this.recursosRequeridos = JSON.parse(cursoRecuperado.list_required_installing_sources);
+        this.recursosPracticas = JSON.parse(cursoRecuperado.list_practice_required_resources);
+        this.recursosTeoricos = JSON.parse(cursoRecuperado.list_aimtheory_required_resources);
+        this.estrategiasAprendizajes = JSON.parse(cursoRecuperado.list_learning_teaching_strategy);
+        this.estrategiasEnsenanzas = JSON.parse(cursoRecuperado.list_teaching_strategies);
+        this.fasesTeoricas = JSON.parse(cursoRecuperado.list_phase_theore);
+        this.fasesPracticas = JSON.parse(cursoRecuperado.list_phase_practical);
+        this.bibliografias = JSON.parse(cursoRecuperado.list_bibliographic);
         this.listarCombosEdicion(cursoRecuperado);
       },
       err => {
@@ -303,8 +430,9 @@ export class FormsComponent implements OnInit {
   public listarCombos() {
     this.cecyService.get("combo", "").subscribe(
       (res: any) => {
-        this.list_carrers = res.career;
-        this.list_academic_periods = res.academic_period;
+        console.log(res);
+        this.list_carrer = res.career;
+        this.list_academic_period = res.academic_period;
         this.list_course_type = res.course_type;
         this.list_modality = res.modality;
         this.list_participant_type = res.participant_type;
@@ -317,7 +445,7 @@ export class FormsComponent implements OnInit {
         this.list_school_period = res.school_period;
         this.list_teacher = res.teacher;
         this.list_status_cecy = res.status_cecy;
-        this.list_WORKDAY_TYPE = res.WORKDAY_TYPE;
+        this.list_workday_type = res.workday_type;
         this.list_classroom = res.classroom;
         this.list_courses_existing = res.courses_existing;
       },
@@ -328,75 +456,100 @@ export class FormsComponent implements OnInit {
   }
 
   public listarCombosEdicion(cursoSeleccionado: any) {
-    this.cecyService.get("combo", "").subscribe(
-      (res: any) => {
-        console.log('COMBOS',res)
-        this.list_carrers = res.career;
-        this.list_academic_periods = res.academic_period;
-        this.list_course_type = res.course_type;
-        this.list_modality = res.modality;
-        this.list_participant_type = res.participant_type;
-        this.list_area = res.area;
-        this.list_specialty = res.specialty;
-        this.list_paralel = res.paralel;
-        this.list_end_time = res.end_time;
-        this.list_start_time = res.start_time;
-        this.list_day = res.day;
-        this.list_school_period = res.school_period;
-        this.list_teacher = res.teacher;
-        this.list_status_cecy = res.status_cecy;
-        this.list_WORKDAY_TYPE = res.WORKDAY_TYPE;
-        this.list_classroom = res.classroom;
-        this.list_courses_existing = res.courses_existing;
-
-        for (var item of this.list_carrers) {
-          if (item.id = cursoSeleccionado.career_id) {
-            this.carreraSeleccionada = item;
-          }
-        }
-
-        for (var item of this.list_academic_periods) {
-          if (item.id = cursoSeleccionado.course_type_id) {
-            this.periodoSeleccionado = item;
-          }
-        }
-
-        for (var item of this.list_course_type) {
-          if (item.id = cursoSeleccionado.course_type_id) {
-            this.tipoCursoSeleccionado = item;
-          }
-        }
-
-        for (var item of this.list_modality) {
-          if (item.id = cursoSeleccionado.modality_id) {
-            this.modalidadSeleccionada = item;
-          }
-        }
-
-        for (var item of this.list_participant_type) {
-          if (item.id = cursoSeleccionado.participant_type_id) {
-            this.tipoParticipanteSeleccionado = item;
-          }
-        }
-
-        for (var item of this.list_area) {
-          if (item.id = cursoSeleccionado.area_id) {
-            this.areaSeleccionada = item;
-          }
-        }
-
-        for (var item of this.list_specialty) {
-          if (item.id = cursoSeleccionado.specialty_id) {
-            this.especialidadSeleccionada = item;
-          }
-        }
-
+    this.cecyService.get("combo/edicion", "").subscribe(
+      (response: any) => {
+        console.log('COMBOS', response);
+        this.newSelectedValues(response, cursoSeleccionado);
       },
       err => {
         console.log(err);
       }
     );
   }
+
+  public newSelectedValues(list: any, cursoSeleccionado: any) {
+
+    this.list_carrer = list.career;
+    this.list_academic_period = list.academic_period;
+    this.list_course_type = list.course_type;
+    this.list_modality = list.modality;
+    this.list_participant_type = list.participant_type;
+    this.list_area = list.area;
+    this.list_specialty = list.specialty;
+    this.list_paralel = list.paralel;
+    this.list_end_time = list.end_time;
+    this.list_start_time = list.start_time;
+    this.list_day = list.day;
+    this.list_school_period = list.school_period;
+    this.list_teacher = list.teacher;
+    this.list_status_cecy = list.status_cecy;
+    this.list_workday_type = list.workday_type;
+    this.list_classroom = list.classroom;
+    this.list_courses_existing = list.courses_existing;
+
+
+    for (let i = 0; i < this.list_carrer.length; i++) {
+      if (this.list_carrer[i].id == cursoSeleccionado.career_id) {
+        this.carreraSeleccionada = this.list_carrer[i];
+      }
+    }
+
+    for (let j = 0; j < this.list_academic_period.length; j++) {
+      if (this.list_academic_period[j].id == cursoSeleccionado.course_period_id) {
+        this.periodoSeleccionado = this.list_academic_period[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_course_type.length; j++) {
+      if (this.list_course_type[j].id == cursoSeleccionado.course_type_id) {
+        this.tipoCursoSeleccionado = this.list_course_type[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_modality.length; j++) {
+      if (this.list_modality[j].id == cursoSeleccionado.modality_id) {
+        this.modalidadSeleccionada = this.list_modality[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_participant_type.length; j++) {
+      if (this.list_participant_type[j].id == cursoSeleccionado.participant_type_id) {
+        this.tipoParticipanteSeleccionado = this.list_participant_type[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_area.length; j++) {
+      if (this.list_area[j].id == cursoSeleccionado.area_id) {
+        this.areaSeleccionada = this.list_area[j];
+      }
+    }
+
+
+    for (let j = 0; j < this.list_specialty.length; j++) {
+      if (this.list_specialty[j].id == cursoSeleccionado.specialty_id) {
+        this.especialidadSeleccionada = this.list_specialty[j];
+      }
+    }   
+
+    for (let j = 0; j < this.list_courses_existing.length; j++) {
+      if (this.list_courses_existing[j].id == cursoSeleccionado.courses_existing_id) {
+        this.prerequisitoSeleccionado = this.list_courses_existing[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_school_period.length; j++) {
+      if (this.list_school_period[j].id == cursoSeleccionado.school_period_id) {
+        this.periodoPlanificacionSeleccionado = this.list_school_period[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_teacher.length; j++) {
+      if (this.list_teacher[j].id == cursoSeleccionado.teacher_id) {
+        this.profesorSeleccionado = this.list_teacher[j];
+      }
+    }   
+
+  }  
 
   add_necesidad(event: Event) {
     event.preventDefault();
@@ -481,6 +634,61 @@ export class FormsComponent implements OnInit {
   delete_tema_transversal(temaTransversalSelected: any) {
     var indice = this.temasTransversales.indexOf(temaTransversalSelected); // obtenemos el indice
     this.temasTransversales.splice(indice, 1);
+  }
+
+  add_recursos_requeridos(event: Event) {
+    event.preventDefault();
+    this.recursosRequeridos.push(this.recursoText);
+    this.recursoText = "";
+  }
+
+  delete_recursos_requeridos(recursoRequeridoSelected: any) {
+    var indice = this.recursosRequeridos.indexOf(recursoRequeridoSelected); // obtenemos el indice
+    this.recursosRequeridos.splice(indice, 1);
+  }
+
+  add_recursos_practicas(event: Event) {
+    event.preventDefault();
+    this.recursosPracticas.push(this.recursoPracticaText);
+    this.recursoPracticaText = "";
+  }
+
+  delete_recursos_practicas(recursoPracticaSelected: any) {
+    var indice = this.recursosPracticas.indexOf(recursoPracticaSelected); // obtenemos el indice
+    this.recursosPracticas.splice(indice, 1);
+  }
+
+  add_recursos_teoricos(event: Event) {
+    event.preventDefault();
+    this.recursosTeoricos.push(this.recursoTeoricoText);
+    this.recursoTeoricoText = "";
+  }
+
+  delete_recursos_teoricos(recursoTeoricoSelected: any) {
+    var indice = this.recursosTeoricos.indexOf(recursoTeoricoSelected); // obtenemos el indice
+    this.recursosTeoricos.splice(indice, 1);
+  }
+
+  add_estrategiasAprendizajes(event: Event) {
+    event.preventDefault();
+    this.estrategiasAprendizajes.push(this.estrategiaAprendizajeText);
+    this.estrategiaAprendizajeText = "";
+  }
+
+  delete_estrategiasAprendizajes(estrategiaAprendizajeSelected: any) {
+    var indice = this.estrategiasAprendizajes.indexOf(estrategiaAprendizajeSelected); // obtenemos el indice
+    this.estrategiasAprendizajes.splice(indice, 1);
+  }
+  
+  add_estrategiasEnsenanzas(event: Event) {
+    event.preventDefault();
+    this.estrategiasEnsenanzas.push(this.estrategiaEnsenanzaText);
+    this.estrategiaEnsenanzaText = "";
+  }
+
+  delete_estrategiasEnsenanzas(estrategiaEnsenanzaSelected: any) {
+    var indice = this.estrategiasEnsenanzas.indexOf(estrategiaEnsenanzaSelected); // obtenemos el indice
+    this.estrategiasEnsenanzas.splice(indice, 1);
   }
 
   add_evaluacion_diagnostica(event: Event) {
@@ -603,27 +811,32 @@ export class FormsComponent implements OnInit {
   public guardarCurso() {
 
     this._spinner.show();
-    
-    this.curso.lista_necesidades = this.necesidades == null ? '' : JSON.stringify(this.necesidades);
-    this.curso.lista_requisitos = this.requisitos == null ? '' : JSON.stringify(this.requisitos);
-    this.curso.lista_prerequisitos = this.prerequisitos == null ? '' : JSON.stringify(this.prerequisitos);
-    this.curso.lista_temas_principales = this.temasPrincipales == null ? '' : JSON.stringify(this.temasPrincipales);
-    this.curso.lista_temas_secundarios = this.temasSecundarios == null ? '' : JSON.stringify(this.temasSecundarios);
-    this.curso.lista_temas_transversales = this.temasTransversales == null ? '' : JSON.stringify(this.temasTransversales);
-    this.curso.lista_evaluaciones_diagnosticas = this.evaluacionesDiagnosticas == null ? '' : JSON.stringify(this.evaluacionesDiagnosticas);
-    this.curso.lista_evaluaciones_procesos = this.evaluacionesProcesos == null ? '' : JSON.stringify(this.evaluacionesProcesos);
-    this.curso.lista_evaluaciones_finales = this.evaluacionesFinales == null ? '' : JSON.stringify(this.evaluacionesFinales);
-    this.curso.lista_instalaciones = this.instalaciones == null ? '' : JSON.stringify(this.instalaciones);
-    this.curso.lista_fases_teoricas = this.fasesTeoricas == null ? '' : JSON.stringify(this.fasesTeoricas);
-    this.curso.lista_fases_practicas = this.fasesPracticas == null ? '' : JSON.stringify(this.fasesPracticas);
-    this.curso.career = this.carreraSeleccionada == undefined ? 0 : this.carreraSeleccionada.id;
-    this.curso.course_period = this.periodoSeleccionado == undefined ? 0 : this.periodoSeleccionado.id;
+
+    this.curso.list_needs = this.necesidades == null ? '' : JSON.stringify(this.necesidades);
+    this.curso.list_requeriments = this.requisitos == null ? '' : JSON.stringify(this.requisitos);
+    this.curso.list_prerequisites = this.prerequisitos == null ? '' : JSON.stringify(this.prerequisitos);
+    this.curso.list_main_topics = this.temasPrincipales == null ? '' : JSON.stringify(this.temasPrincipales);
+    this.curso.list_subtopics = this.temasSecundarios == null ? '' : JSON.stringify(this.temasSecundarios);
+    this.curso.list_cross_topics = this.temasTransversales == null ? '' : JSON.stringify(this.temasTransversales);
+    this.curso.list_evaluations_diagnostic = this.evaluacionesDiagnosticas == null ? '' : JSON.stringify(this.evaluacionesDiagnosticas);
+    this.curso.list_evaluations_process = this.evaluacionesProcesos == null ? '' : JSON.stringify(this.evaluacionesProcesos);
+    this.curso.list_evaluations_final = this.evaluacionesFinales == null ? '' : JSON.stringify(this.evaluacionesFinales);
+    this.curso.list_facilities = this.instalaciones == null ? '' : JSON.stringify(this.instalaciones);
+    this.curso.list_phase_theore = this.fasesTeoricas == null ? '' : JSON.stringify(this.fasesTeoricas);
+    this.curso.list_phase_practical = this.fasesPracticas == null ? '' : JSON.stringify(this.fasesPracticas);
+    this.curso.career_id = this.carreraSeleccionada == undefined ? 0 : this.carreraSeleccionada.id;
+    this.curso.course_period_id = this.periodoSeleccionado == undefined ? 0 : this.periodoSeleccionado.id;
     this.curso.course_type = this.tipoCursoSeleccionado == undefined ? 0 : this.tipoCursoSeleccionado.id;
     this.curso.modality = this.modalidadSeleccionada == undefined ? 0 : this.modalidadSeleccionada.id;
     this.curso.participant_type = this.tipoParticipanteSeleccionado == undefined ? 0 : this.tipoParticipanteSeleccionado.id;
     this.curso.area = this.areaSeleccionada == undefined ? 0 : this.areaSeleccionada.id;
     this.curso.specialty = this.especialidadSeleccionada == undefined ? 0 : this.especialidadSeleccionada.id;
-    this.curso.bibliographys = this.bibliografias == null ? '' : JSON.stringify(this.bibliografias);
+    this.curso.list_bibliographic = this.bibliografias == null ? '' : JSON.stringify(this.bibliografias);
+    this.curso.list_required_installing_sources = this.recursosRequeridos == null ? '' : JSON.stringify(this.recursosRequeridos);
+    this.curso.list_practice_required_resources = this.recursosPracticas == null ? '' : JSON.stringify(this.recursosPracticas);
+    this.curso.list_aimtheory_required_resources = this.recursosTeoricos == null ? '' : JSON.stringify(this.recursosTeoricos);
+    this.curso.list_learning_teaching_strategy = this.estrategiasAprendizajes == null ? '' : JSON.stringify(this.estrategiasAprendizajes);
+    this.curso.list_teaching_strategies = this.estrategiasEnsenanzas == null ? '' : JSON.stringify(this.estrategiasEnsenanzas);
     this.curso.cost = this.curso.cost == '' ? '00.00' : this.curso.cost;
     this.curso.free = this.value == undefined ? false : this.value;
     this.curso.photo = this.imagenCurso;
@@ -661,26 +874,31 @@ export class FormsComponent implements OnInit {
 
     this._spinner.show();
 
-    this.curso.lista_necesidades = this.necesidades == null ? '' : JSON.stringify(this.necesidades);
-    this.curso.lista_requisitos = this.requisitos == null ? '' : JSON.stringify(this.requisitos);
-    this.curso.lista_prerequisitos = this.prerequisitos == null ? '' : JSON.stringify(this.prerequisitos);
-    this.curso.lista_temas_principales = this.temasPrincipales == null ? '' : JSON.stringify(this.temasPrincipales);
-    this.curso.lista_temas_secundarios = this.temasSecundarios == null ? '' : JSON.stringify(this.temasSecundarios);
-    this.curso.lista_temas_transversales = this.temasTransversales == null ? '' : JSON.stringify(this.temasTransversales);
-    this.curso.lista_evaluaciones_diagnosticas = this.evaluacionesDiagnosticas == null ? '' : JSON.stringify(this.evaluacionesDiagnosticas);
-    this.curso.lista_evaluaciones_procesos = this.evaluacionesProcesos == null ? '' : JSON.stringify(this.evaluacionesProcesos);
-    this.curso.lista_evaluaciones_finales = this.evaluacionesFinales == null ? '' : JSON.stringify(this.evaluacionesFinales);
-    this.curso.lista_instalaciones = this.instalaciones == null ? '' : JSON.stringify(this.instalaciones);
-    this.curso.lista_fases_teoricas = this.fasesTeoricas == null ? '' : JSON.stringify(this.fasesTeoricas);
-    this.curso.lista_fases_practicas = this.fasesPracticas == null ? '' : JSON.stringify(this.fasesPracticas);
-    this.curso.career = this.carreraSeleccionada == undefined ? 0 : this.carreraSeleccionada.id;
-    this.curso.course_period = this.periodoSeleccionado == undefined ? 0 : this.periodoSeleccionado.id;
+    this.curso.list_needs = this.necesidades == null ? '' : JSON.stringify(this.necesidades);
+    this.curso.list_requeriments = this.requisitos == null ? '' : JSON.stringify(this.requisitos);
+    this.curso.list_prerequisites = this.prerequisitos == null ? '' : JSON.stringify(this.prerequisitos);
+    this.curso.list_main_topics = this.temasPrincipales == null ? '' : JSON.stringify(this.temasPrincipales);
+    this.curso.list_subtopics = this.temasSecundarios == null ? '' : JSON.stringify(this.temasSecundarios);
+    this.curso.list_cross_topics = this.temasTransversales == null ? '' : JSON.stringify(this.temasTransversales);
+    this.curso.list_evaluations_diagnostic = this.evaluacionesDiagnosticas == null ? '' : JSON.stringify(this.evaluacionesDiagnosticas);
+    this.curso.list_evaluations_process = this.evaluacionesProcesos == null ? '' : JSON.stringify(this.evaluacionesProcesos);
+    this.curso.list_evaluations_final = this.evaluacionesFinales == null ? '' : JSON.stringify(this.evaluacionesFinales);
+    this.curso.list_facilities = this.instalaciones == null ? '' : JSON.stringify(this.instalaciones);
+    this.curso.list_phase_theore = this.fasesTeoricas == null ? '' : JSON.stringify(this.fasesTeoricas);
+    this.curso.list_phase_practical = this.fasesPracticas == null ? '' : JSON.stringify(this.fasesPracticas);
+    this.curso.career_id = this.carreraSeleccionada == undefined ? 0 : this.carreraSeleccionada.id;
+    this.curso.course_period_id = this.periodoSeleccionado == undefined ? 0 : this.periodoSeleccionado.id;
     this.curso.course_type = this.tipoCursoSeleccionado == undefined ? 0 : this.tipoCursoSeleccionado.id;
     this.curso.modality = this.modalidadSeleccionada == undefined ? 0 : this.modalidadSeleccionada.id;
     this.curso.participant_type = this.tipoParticipanteSeleccionado == undefined ? 0 : this.tipoParticipanteSeleccionado.id;
     this.curso.area = this.areaSeleccionada == undefined ? 0 : this.areaSeleccionada.id;
     this.curso.specialty = this.especialidadSeleccionada == undefined ? 0 : this.especialidadSeleccionada.id;
-    this.curso.bibliographys = this.bibliografias == null ? '' : JSON.stringify(this.bibliografias);
+    this.curso.list_bibliographic = this.bibliografias == null ? '' : JSON.stringify(this.bibliografias);
+    this.curso.list_required_installing_sources = this.recursosRequeridos == null ? '' : JSON.stringify(this.recursosRequeridos);
+    this.curso.list_practice_required_resources = this.recursosPracticas == null ? '' : JSON.stringify(this.recursosPracticas);
+    this.curso.list_aimtheory_required_resources = this.recursosTeoricos == null ? '' : JSON.stringify(this.recursosTeoricos);
+    this.curso.list_learning_teaching_strategy = this.estrategiasAprendizajes == null ? '' : JSON.stringify(this.estrategiasAprendizajes);
+    this.curso.list_teaching_strategies = this.estrategiasEnsenanzas == null ? '' : JSON.stringify(this.estrategiasEnsenanzas);
     this.curso.cost = this.curso.cost == '' ? '00.00' : this.curso.cost;
     this.curso.free = this.value == undefined ? false : this.value;
     this.curso.photo = this.imagenCurso;
@@ -691,7 +909,7 @@ export class FormsComponent implements OnInit {
         console.log(res);
         if (res.msg.code == '200') {
           console.log('Curso actualizado Exitosamente.');
-          
+
           this.messageService.add({
             key: 'msgToast',
             severity: 'success',
@@ -710,46 +928,32 @@ export class FormsComponent implements OnInit {
         console.log(err);
       }
     );
-
-
   }
 
   public validarFecha() {
 
-    var fecha1 = moment(this.planning.fechaInicio);
-    var fecha2 = moment(this.planning.fechaFinalizacion);
-    this.planning.days = fecha2.diff(fecha1, 'days')
+    var fecha1 = moment(this.plannig_details.dateStart);
+    var fecha2 = moment(this.plannig_details.dateEnd);
+    this.plannig_details.dateFinal = this.plannig_details.dateEnd;
+    this.plannig_details.capacity = this.curso.capacity;
+    this.plannig_details.days = fecha2.diff(fecha1, 'days') + 1;
 
   }
 
   public guardarPlanificacion() {
 
-    this.planning.course_id = this.tipoCursoSeleccionado == undefined ? 0 : this.tipoCursoSeleccionado.id;
-    this.planning.fechaCreacion = moment(this.planning.fechaCreacion).format('YYYY-MM-DD');
+    this.planning.course_id = this.idCurso == undefined ? 0 : this.idCurso;
+    this.planning.dateCreation = moment(this.planning.dateCreation).format('YYYY-MM-DD');
     this.planning.school_period_id = this.periodoPlanificacionSeleccionado == undefined ? 0 : this.periodoPlanificacionSeleccionado.id;
     this.planning.teacher_id = this.profesorSeleccionado == undefined ? 0 : this.profesorSeleccionado.id;
-    this.planning.lista_necesidades_planning = this.necesidades_planning == null ? '' : JSON.stringify(this.necesidades_planning);
-    this.planning.fechaInicio = moment(this.planning.fechaInicio).format('YYYY-MM-DD');
-    this.planning.fechaFinalizacion = moment(this.planning.fechaFinalizacion).format('YYYY-MM-DD');
-    this.planning.fechaFinal = moment(this.planning.fechaFinal).format('YYYY-MM-DD');
-    this.planning.capacity = this.curso.capacity;
-    this.planning.develop_day_id = this.diaSeleccionado == undefined ? 0 : this.diaSeleccionado.id;
-    this.planning.start_time_id = this.fechaInicioSeleccionado == undefined ? 0 : this.fechaInicioSeleccionado.id;
-    this.planning.end_time_id = this.fechaFinSeleccionado == undefined ? 0 : this.fechaFinSeleccionado.id;
-    this.planning.classroom_id = this.aulaSeleccionada == undefined ? 0 : this.aulaSeleccionada.id;
-    this.planning.paralel_id = this.paraleloSeleccionado == undefined ? 0 : this.paraleloSeleccionado.id;
-    this.planning.workday_type_id = this.jornadaSeleccionada == undefined ? 0 : this.jornadaSeleccionada.id;
-    this.planning.instructor_id = this.instructorSeleccionado == undefined ? 0 : this.instructorSeleccionado.id;
-    this.planning.status_cecy_id = this.estatusSeleccionado == undefined ? 0 : this.estatusSeleccionado.id;
-
-    console.log('PLANIFICACIONNNNNN',this.planning);
+    this.planning.list_needs_planning = this.necesidades_planning == null ? '' : JSON.stringify(this.necesidades_planning);
 
     this.cecyService.post("planning/create", this.planning, "").subscribe(
       (res: any) => {
         console.log(res);
         if (res.msg.code == '200') {
           console.log('Planificación Agregada Exitosamente.');
-          
+
           this.messageService.add({
             key: 'msgToast',
             severity: 'success',
@@ -762,6 +966,257 @@ export class FormsComponent implements OnInit {
           }, 4000);
 
           this._spinner.hide();
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  public actualizarPlanificacion() {
+
+    this._spinner.show();
+
+    this.planning.planning_id = this.idPlanning == undefined ? 0 : this.idPlanning;
+    this.planning.course_id = this.idCurso == undefined ? 0 : this.idCurso;
+    this.planning.dateCreation = moment(this.planning.dateCreation).format('YYYY-MM-DD');
+    this.planning.school_period_id = this.periodoPlanificacionSeleccionado == undefined ? 0 : this.periodoPlanificacionSeleccionado.id;
+    this.planning.teacher_id = this.profesorSeleccionado == undefined ? 0 : this.profesorSeleccionado.id;
+    this.planning.list_needs_planning = this.necesidades_planning == null ? '' : JSON.stringify(this.necesidades_planning);
+
+    this.cecyService.post("planning/update", this.planning, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          console.log('Planificación Actualizada Exitosamente.');
+
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'success',
+            summary: res['msg']['summary'],
+            detail: res['msg']['detail']
+          });
+
+          setTimeout(() => {
+            this._router.navigate(['/cecy/courses']);
+          }, 4000);
+
+          this._spinner.hide();
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  public guardarDetallePlanificacion() {
+
+    this.plannig_details.course_id = this.idCurso == undefined ? 0 : this.idCurso;
+    this.plannig_details.planning_id = this.idPlanning == undefined ? 0 : this.idPlanning;
+    this.plannig_details.dateStart = moment(this.plannig_details.dateStart).format('YYYY-MM-DD');
+    this.plannig_details.dateFinal = moment(this.plannig_details.dateFinal).format('YYYY-MM-DD');
+    this.plannig_details.dateEnd = moment(this.plannig_details.dateEnd).format('YYYY-MM-DD');
+    this.plannig_details.classroom_id = this.aulaSeleccionada == undefined ? 0 : this.aulaSeleccionada.id;
+    this.plannig_details.develop_day_id = this.diaSeleccionado == undefined ? 0 : this.diaSeleccionado.id;
+    this.plannig_details.start_time_id = this.fechaInicioSeleccionado == undefined ? 0 : this.fechaInicioSeleccionado.id;
+    this.plannig_details.end_time_id = this.fechaFinSeleccionado == undefined ? 0 : this.fechaFinSeleccionado.id;
+    this.plannig_details.workday_type_id = this.jornadaSeleccionada == undefined ? 0 : this.jornadaSeleccionada.id;
+    this.plannig_details.paralel_id = this.paraleloSeleccionado == undefined ? 0 : this.paraleloSeleccionado.id;
+    this.plannig_details.instructor_id = this.instructorSeleccionado == undefined ? 0 : this.instructorSeleccionado.id;
+    this.plannig_details.status_cecy_id = this.estatusSeleccionado == undefined ? 0 : this.estatusSeleccionado.id;
+
+
+    this.cecyService.post("plannig_details/create", this.plannig_details, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          console.log('Detalle Planificación Agregado Exitosamente.');
+
+          $('#exampleModal').modal('toggle')
+
+          setTimeout(() => {
+            this.messageService.add({
+              key: 'msgToast',
+              severity: 'success',
+              summary: res['msg']['summary'],
+              detail: res['msg']['detail']
+            });
+          }, 2500);
+
+          setTimeout(() => {
+            this._router.navigate(['/cecy/courses']);
+          }, 4000);
+          this._spinner.hide();
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }
+
+  public handleChange(e) {   
+    var index = e.index;
+    console.log(index);
+    if (index == 7) {
+      this.listarDetallesPlanificacion();
+    }
+  }
+
+  public listarDetallesPlanificacion(){
+    var datos : any = {
+      'id' : this.idCurso
+    }
+    this.cecyService.post("plannig_details/list", datos,"").subscribe(
+      (res: any) => {
+        console.log(res);
+        var lista_detalles_recuperados = res;
+
+        for (let i = 0; i < lista_detalles_recuperados.length; i++) {
+          console.log();
+          for (let j = 0; j < this.list_teacher.length; j++) {
+            if(lista_detalles_recuperados[i].instructor_id == this.list_teacher[j].id){
+              lista_detalles_recuperados[i].instructor = this.list_teacher[j].user.username; 
+            }
+          }
+          for (let j = 0; j < this.list_classroom.length; j++) {
+            if(lista_detalles_recuperados[i].classroom_id == this.list_classroom[j].id){
+              lista_detalles_recuperados[i].classroom = this.list_classroom[j].name; 
+            }
+          }
+        }
+
+        this.list_planning_details = lista_detalles_recuperados;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  public modificarDetallePlanificacion(detalleSeleccionado:any){ 
+    this.plannig_details = detalleSeleccionado;  
+
+    for (let j = 0; j < this.list_paralel.length; j++) {
+      if (this.list_paralel[j].id == this.plannig_details.paralel_id) {
+        this.paraleloSeleccionado = this.list_paralel[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_day.length; j++) {
+      if (this.list_day[j].id == this.plannig_details.develop_day_id) {
+        this.diaSeleccionado = this.list_day[j];
+      }
+    }       
+
+    for (let j = 0; j < this.list_status_cecy.length; j++) {
+      if (this.list_status_cecy[j].id == this.plannig_details.status_cecy_id) {
+        this.estatusSeleccionado = this.list_status_cecy[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_classroom.length; j++) {
+      if (this.list_classroom[j].id == this.plannig_details.classroom_id) {
+        this.aulaSeleccionada = this.list_classroom[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_start_time.length; j++) {
+      if (this.list_start_time[j].id == this.plannig_details.start_time_id) {
+        this.fechaInicioSeleccionado = this.list_start_time[j];
+      }
+    }
+
+    
+    for (let j = 0; j < this.list_end_time.length; j++) {
+      if (this.list_end_time[j].id == this.plannig_details.end_time_id) {
+        this.fechaFinSeleccionado = this.list_end_time[j];
+      }
+    } 
+
+    for (let j = 0; j < this.list_teacher.length; j++) {
+      if (this.list_teacher[j].id == this.plannig_details.instructor_id) {
+        this.instructorSeleccionado = this.list_teacher[j];
+      }
+    }   
+
+    for (let j = 0; j < this.list_workday_type.length; j++) {
+      if (this.list_workday_type[j].id == this.plannig_details.workday_type_id) {
+        this.jornadaSeleccionada = this.list_workday_type[j];
+      }
+    }       
+
+    $('#exampleModalEdit').modal('toggle');
+  }
+
+  public actualizarDetallePlanificacion() {
+
+    this._spinner.show();
+    this.plannig_details.course_id = this.idCurso == undefined ? 0 : this.idCurso;
+    this.plannig_details.planning_id = this.idPlanning == undefined ? 0 : this.idPlanning;
+    this.plannig_details.dateStart = moment(this.plannig_details.dateStart).format('YYYY-MM-DD');
+    this.plannig_details.dateFinal = moment(this.plannig_details.dateFinal).format('YYYY-MM-DD');
+    this.plannig_details.dateEnd = moment(this.plannig_details.dateEnd).format('YYYY-MM-DD');
+    this.plannig_details.classroom_id = this.aulaSeleccionada == undefined ? 0 : this.aulaSeleccionada.id;
+    this.plannig_details.develop_day_id = this.diaSeleccionado == undefined ? 0 : this.diaSeleccionado.id;
+    this.plannig_details.start_time_id = this.fechaInicioSeleccionado == undefined ? 0 : this.fechaInicioSeleccionado.id;
+    this.plannig_details.end_time_id = this.fechaFinSeleccionado == undefined ? 0 : this.fechaFinSeleccionado.id;
+    this.plannig_details.workday_type_id = this.jornadaSeleccionada == undefined ? 0 : this.jornadaSeleccionada.id;
+    this.plannig_details.paralel_id = this.paraleloSeleccionado == undefined ? 0 : this.paraleloSeleccionado.id;
+    this.plannig_details.instructor_id = this.instructorSeleccionado == undefined ? 0 : this.instructorSeleccionado.id;
+    this.plannig_details.status_cecy_id = this.estatusSeleccionado == undefined ? 0 : this.estatusSeleccionado.id;
+
+    this.cecyService.post("plannig_details/update", this.plannig_details, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          console.log('Detalle Planificación Agregado Exitosamente.');
+
+          setTimeout(() => {
+            this.messageService.add({
+              key: 'msgToast',
+              severity: 'success',
+              summary: res['msg']['summary'],
+              detail: res['msg']['detail']
+            });
+          }, 2500);
+
+          this._spinner.hide();
+          this.listarDetallesPlanificacion();
+          $('#exampleModalEdit').modal('toggle')
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }
+
+  public eliminarDetallePlanificacion(detalleSeleccionado:any){
+    this._spinner.show();
+
+    var datos : any = {
+      'id' : detalleSeleccionado.id
+    }
+
+    this.cecyService.post("plannig_details/delete", datos,"").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          setTimeout(() => {
+            this.messageService.add({
+              key: 'msgToast',
+              severity: 'success',
+              summary: res['msg']['summary'],
+              detail: res['msg']['detail']
+            });
+          }, 2500);
+          this._spinner.hide();
+          this.listarDetallesPlanificacion();
         }
       },
       err => {

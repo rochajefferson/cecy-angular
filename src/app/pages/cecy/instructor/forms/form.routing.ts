@@ -20,7 +20,19 @@ export const FormRoutes: Routes = [
             {
                 path: 'planning/:id',
                 component: FormsComponent
-            }          
+            },
+            {
+                path: 'planning-view/:id',
+                component: FormsComponent
+            },
+            {
+                path: 'planning-edit/:id',
+                component: FormsComponent
+            },
+            {
+                path: 'planning-curso/:id',
+                component: FormsComponent
+            }
         ]
     }
 ];

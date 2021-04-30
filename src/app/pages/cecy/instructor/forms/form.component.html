@@ -7,26 +7,31 @@
         <div class="p-grid">
             <div class="p-col-12">
                 <div class="p-fluid p-formgrid p-grid">
-                    <div class="p-field p-col-6">
+                    <div class="p-field p-col-3">
                         <label><b>Nombre del Curso</b></label>
                         <input type="text" pInputText placeholder="Ingrese el nombre del curso" [(ngModel)]="curso.name"
-                            [disabled]="variableVisualizacion">
+                            [disabled]="variableVisualizacion" class="p-text-uppercase">
+                    </div>
+                    <div class="p-field p-col-3">
+                        <label for="name"><b>Código del Curso</b></label>
+                        <input id="name" type="text" pInputText placeholder="Ingrese el código del curso"
+                            [(ngModel)]="planning.code" [disabled]="variableVisualizacionPlanificacion" class="p-text-uppercase">
                     </div>
                     <div class="p-field p-col-3">
                         <label for="carrer"><b>Carrera</b></label>
-                        <p-dropdown [options]="list_carrers" optionLabel="name" placeholder="Seleccione una Carrera"
+                        <p-dropdown [options]="list_carrer" optionLabel="name" placeholder="Seleccione una Carrera"
                             [(ngModel)]="carreraSeleccionada" [disabled]="variableVisualizacion"></p-dropdown>
                     </div>
                     <div class="p-field p-col-3">
                         <label for="period"><b>Periódo del Curso</b></label>
-                        <p-dropdown [options]="list_academic_periods" optionLabel="name"
+                        <p-dropdown [options]="list_academic_period" optionLabel="name"
                             placeholder="Seleccione un Periodo Académico" [(ngModel)]="periodoSeleccionado"
                             [disabled]="variableVisualizacion"></p-dropdown>
                     </div>
                 </div>
             </div>
             <div class="p-col-12">
-                <p-tabView>
+                <p-tabView (onChange)="handleChange($event)">
                     <p-tabPanel header="Datos Generales" leftIcon="pi pi-users">
                         <div class="p-grid">
                             <div class="p-col-12">
@@ -51,7 +56,7 @@
                             <div class="p-col-12">
                                 <div class="p-fluid p-formgrid p-grid">
                                     <div class="p-field p-col">
-                                        <label for="period"><b>Tipo Curso</b></label>
+                                        <label for="course_type"><b>Tipo Curso</b></label>
                                         <p-dropdown [options]="list_course_type" optionLabel="name"
                                             placeholder="Ingrese el tipo de curso" [(ngModel)]="tipoCursoSeleccionado"
                                             [disabled]="variableVisualizacion"></p-dropdown>
@@ -81,11 +86,11 @@
                             <div class="p-col-12">
                                 <div class="p-fluid p-formgrid p-grid">
                                     <div class="p-field p-col">
-                                        <label for="period"><b>Lugar / Lugares donde se impartirá el
+                                        <label for="name"><b>Lugar / Lugares donde se impartirá el
                                                 curso</b></label>
                                         <input id="name" type="text" pInputText
                                             placeholder="Ingrese el o los lugares donde se va a realizar el curso"
-                                            [(ngModel)]="curso.place" [disabled]="variableVisualizacion">
+                                            [(ngModel)]="curso.place" [disabled]="variableVisualizacion" class="p-text-uppercase">
                                     </div>
                                     <div class="p-field p-col">
                                         <label for="name"><b>Población del Curso:</b></label>
@@ -95,6 +100,11 @@
                                             [disabled]="variableVisualizacion">
                                         </p-dropdown>
                                     </div>
+                                    <div class="p-field p-col-3">
+                                        <label><b>Abreviatura del Curso</b></label>
+                                        <input type="text" pInputText placeholder="Ingrese la abreviatura del curso" [(ngModel)]="curso.abbreviation"
+                                            [disabled]="variableVisualizacion" class="p-text-uppercase">
+                                    </div>
                                 </div>
                             </div>
                             <div class="p-col-12">
@@ -103,7 +113,7 @@
                                         <label for="code"><b>Resumen del curso y posible proyecto</b></label><br>
                                         <textarea [rows]="5" [cols]="30" pInputTextarea
                                             placeholder="Ingrese el resumen del curso y posible proyecto"
-                                            [(ngModel)]="curso.resume" [disabled]="variableVisualizacion"
+                                            [(ngModel)]="curso.resume" [disabled]="variableVisualizacion" class="p-text-uppercase"
                                             autoResize="autoResize"></textarea>
                                     </div>
                                 </div>
@@ -120,13 +130,13 @@
                                                 placeholder="Ingrese las necesidades de este curso."
                                                 [(ngModel)]="necesidadText" [disabled]="variableVisualizacion">
                                             <button type="button" pButton pRipple label="Agregar Necesidad"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_necesidad($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="necesidades">
+                                        <p-table [value]="necesidades" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Necesidades</ng-template>
                                             <ng-template pTemplate="body" let-necesidades>
                                                 <tr>
@@ -148,9 +158,8 @@
                                     <div class="p-field p-col-6">
                                         <label for="prerequisitos"><b>Prerequisitos</b></label><br>
                                         <div class="p-inputgroup">
-                                            <p-dropdown [options]="list_carrers" optionLabel="name"
-                                                placeholder="Seleccione una Curso"
-                                                [(ngModel)]="prerequisitoSeleccionado"
+                                            <p-dropdown [options]="list_courses_existing" optionLabel="name"
+                                                placeholder="Seleccione un Curso" [(ngModel)]="prerequisitoSeleccionado"
                                                 [disabled]="variableVisualizacion"></p-dropdown>
                                             <button type="button" pButton pRipple label="Agregar Prerequisito"
                                                 [disabled]="variableVisualizacion"
@@ -159,7 +168,7 @@
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="prerequisitos">
+                                        <p-table [value]="prerequisitos" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Prerequisitos</ng-template>
                                             <ng-template pTemplate="body" let-prerequisitos>
                                                 <tr>
@@ -224,13 +233,13 @@
                                                 placeholder="Ingrese los requisitos de este curso."
                                                 [(ngModel)]="requisitoText" [disabled]="variableVisualizacion">
                                             <button type="button" pButton pRipple label="Agregar Requisito"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_requisito($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="requisitos">
+                                        <p-table [value]="requisitos" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Requisitos</ng-template>
                                             <ng-template pTemplate="body" let-requisito>
                                                 <tr>
@@ -254,13 +263,13 @@
                                                 placeholder="Ingrese los temas principales de este curso."
                                                 [(ngModel)]="pricipalText" [disabled]="variableVisualizacion">
                                             <button type="button" pButton pRipple label="Agregar Tema Principal"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)=" add_tema_principal($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="temasPrincipales">
+                                        <p-table [value]="temasPrincipales" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Temas Principales
                                             </ng-template>
                                             <ng-template pTemplate="body" let-temaPrincipal>
@@ -286,13 +295,13 @@
                                                 placeholder="Ingrese los temas secundarios de este curso."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="secundaryText">
                                             <button type="button" pButton pRipple label="Agregar Tema Secundario"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_tema_secundario($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="temasSecundarios">
+                                        <p-table [value]="temasSecundarios" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Temas Secundarios
                                             </ng-template>
                                             <ng-template pTemplate="body" let-temaSecundario>
@@ -318,13 +327,13 @@
                                                 placeholder="Ingrese los temas transversales de este curso."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="transversalText">
                                             <button type="button" pButton pRipple label="Agregar Tema Transversal"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_tema_transversal($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="temasTransversales">
+                                        <p-table [value]="temasTransversales" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Temas Transversales
                                             </ng-template>
                                             <ng-template pTemplate="body" let-temaTransversal>
@@ -337,6 +346,46 @@
                                                 </tr>
                                             </ng-template>
                                         </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-col-12">
+                                        <p-messages [(value)]="msgs"></p-messages>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <label for="carrer"><b>Recursos Requeridos Instalación</b></label><br>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText
+                                                placeholder="Ingrese los recursos requeridos."
+                                                [(ngModel)]="recursoText" [disabled]="variableVisualizacion">
+                                            <button type="button" pButton pRipple label="Agregar Recurso Requerido"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
+                                                (click)="add_recursos_requeridos($event)"></button>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <br>
+                                        <p-table [value]="recursosRequeridos" class="p-text-uppercase">
+                                            <ng-template pTemplate="caption">Listado de Recursos Requeridos Instalación</ng-template>
+                                            <ng-template pTemplate="body" let-recursoRequerido>
+                                                <tr>
+                                                    <td>{{recursoRequerido}}</td>
+                                                    <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacion"
+                                                            (click)="delete_recursos_requeridos(recursoRequerido)"></button></td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-col-12">
+                                    <div class="p-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12">
+                                            <label><b>Objetivos</b></label>
+                                            <textarea [rows]="5" pInputTextarea [disabled]="variableVisualizacion"
+                                                placeholder="Ingrese los objetivos del curso" class="p-text-uppercase"
+                                                [(ngModel)]="curso.objective"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -356,14 +405,14 @@
                                         <label for="name"><b>Técnica</b></label>
                                         <input id="name" type="text" pInputText
                                             placeholder="Ingrese lo técnica a realizarse."
-                                            [disabled]="variableVisualizacion"
+                                            [disabled]="variableVisualizacion" class="p-text-uppercase"
                                             [(ngModel)]="evaluacionDiagnostica.tecnica">
                                     </div>
                                     <div class="p-field p-col-5">
                                         <label for="name"><b>Instrumento</b></label>
                                         <input id="name" type="text" pInputText
                                             placeholder="Ingrese el instrumento que va utilizar."
-                                            [disabled]="variableVisualizacion"
+                                            [disabled]="variableVisualizacion" class="p-text-uppercase"
                                             [(ngModel)]="evaluacionDiagnostica.instrumento">
                                     </div>
                                     <div class="p-field p-col-2" style="margin-top: 2%;">
@@ -372,7 +421,7 @@
                                     </div>
                                     <div class="p-field p-col-12">
                                         <br>
-                                        <p-table [value]="evaluacionesDiagnosticas">
+                                        <p-table [value]="evaluacionesDiagnosticas" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Evaluaciones Diagnósticas
                                             </ng-template>
                                             <ng-template pTemplate="body" let-evaluacionDiagnostica>
@@ -398,14 +447,14 @@
                                     <div class="p-field p-col-5">
                                         <label for="name"><b>Técnica</b></label>
                                         <input id="name" type="text" pInputText pInputText
-                                            placeholder="Ingrese lo técnica a realizarse."
+                                            placeholder="Ingrese lo técnica a realizarse." class="p-text-uppercase"
                                             [disabled]="variableVisualizacion" [(ngModel)]="evaluacionProceso.tecnica">
                                     </div>
                                     <div class="p-field p-col-5">
                                         <label for="name"><b>Instrumento</b></label>
                                         <input id="name" type="text" pInputText
                                             placeholder="Ingrese el instrumento que va utilizar."
-                                            [disabled]="variableVisualizacion"
+                                            [disabled]="variableVisualizacion" class="p-text-uppercase"
                                             [(ngModel)]="evaluacionProceso.instrumento">
                                     </div>
                                     <div class="p-field p-col-2" style="margin-top: 2%;">
@@ -414,7 +463,7 @@
                                     </div>
                                     <div class="p-field p-col-12">
                                         <br>
-                                        <p-table [value]="evaluacionesProcesos">
+                                        <p-table [value]="evaluacionesProcesos" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Evaluaciones Proceso
                                                 Formativo
                                             </ng-template>
@@ -441,14 +490,14 @@
                                     <div class="p-field p-col-5">
                                         <label for="name"><b>Técnica</b></label>
                                         <input id="name" type="text" pInputText
-                                            placeholder="Ingrese lo técnica a realizarse."
+                                            placeholder="Ingrese lo técnica a realizarse." class="p-text-uppercase"
                                             [disabled]="variableVisualizacion" [(ngModel)]="evaluacionFinal.tecnica">
                                     </div>
                                     <div class="p-field p-col-5">
                                         <label for="name"><b>Instrumento</b></label>
                                         <input id="name" type="text" pInputText
                                             placeholder="Ingrese el instrumento que va utilizar."
-                                            [disabled]="variableVisualizacion"
+                                            [disabled]="variableVisualizacion" class="p-text-uppercase"
                                             [(ngModel)]="evaluacionFinal.instrumento">
                                     </div>
                                     <div class="p-field p-col-2" style="margin-top: 2%;">
@@ -457,7 +506,7 @@
                                     </div>
                                     <div class="p-field p-col-12">
                                         <br>
-                                        <p-table [value]="evaluacionesFinales">
+                                        <p-table [value]="evaluacionesFinales" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Evaluaciones Finales
                                             </ng-template>
                                             <ng-template pTemplate="body" let-evaluacionFinal>
@@ -507,13 +556,13 @@
                                             <input type="text" pInputText placeholder="Ingrese una bibliografía."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="bibliografiaText">
                                             <button type="button" pButton pRipple label="Agregar Bibliografía"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="text-lowercase"
                                                 (click)="add_bibliografia($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="bibliografias">
+                                        <p-table [value]="bibliografias" class="text-lowercase">
                                             <ng-template pTemplate="caption">Listado de Bibliografías</ng-template>
                                             <ng-template pTemplate="body" let-bibliografia>
                                                 <tr>
@@ -536,13 +585,13 @@
                                             <input type="text" pInputText placeholder="Ingrese una instalación."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="instalacionText">
                                             <button type="button" pButton pRipple label="Agregar Instalación"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_instalacion($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="instalaciones">
+                                        <p-table [value]="instalaciones" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Instalaciones</ng-template>
                                             <ng-template pTemplate="body" let-instalacion>
                                                 <tr>
@@ -562,16 +611,16 @@
                                     <div class="p-field p-col-6">
                                         <label for="carrer"><b>Fase Teórica</b></label><br>
                                         <div class="p-inputgroup">
-                                            <input type="text" pInputText placeholder="llene el campo."
+                                            <input type="text" pInputText placeholder="Ingrese fase teórica."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="faseTeoricaText">
                                             <button type="button" pButton pRipple label="Agregar Fase Teórica"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)=" add_fase_teorica($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="fasesTeoricas">
+                                        <p-table [value]="fasesTeoricas" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Lista Fases Teóricas</ng-template>
                                             <ng-template pTemplate="body" let-faseTeorica>
                                                 <tr>
@@ -592,16 +641,16 @@
                                     <div class="p-field p-col-6">
                                         <label for="carrer"><b>Fase Práctica</b></label><br>
                                         <div class="p-inputgroup">
-                                            <input type="text" pInputText placeholder="Llene el campo."
+                                            <input type="text" pInputText placeholder="Ingrese fase práctica."
                                                 [disabled]="variableVisualizacion" [(ngModel)]="fasePracticaText">
                                             <button type="button" pButton pRipple label="Agregar Fase Practica"
-                                                [disabled]="variableVisualizacion"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
                                                 (click)="add_fase_practica($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="fasesPracticas">
+                                        <p-table [value]="fasesPracticas" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Lista Fases Prácticas</ng-template>
                                             <ng-template pTemplate="body" let-fasePractica>
                                                 <tr>
@@ -609,6 +658,126 @@
                                                     <td><button type="button" pButton label="Borrar"
                                                             [disabled]="variableVisualizacion"
                                                             (click)="delete_fase_practica(fasePractica)"></button>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-col-12">
+                                        <p-messages [(value)]="msgs"></p-messages>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <label for="carrer"><b>Recursos Requeridos Práctica</b></label><br>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText placeholder="Ingrese recursos requeridos práctica."
+                                                [disabled]="variableVisualizacion" [(ngModel)]="recursoPracticaText">
+                                            <button type="button" pButton pRipple label="Agregar Recursos Requeridos Práctica"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
+                                                (click)="add_recursos_practicas($event)"></button>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <br>
+                                        <p-table [value]="recursosPracticas" class="p-text-uppercase">
+                                            <ng-template pTemplate="caption">Lista Recursos Requeridos Práctica</ng-template>
+                                            <ng-template pTemplate="body" let-recursoPractica>
+                                                <tr>
+                                                    <td>{{ recursoPractica }}</td>
+                                                    <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacion"
+                                                            (click)="delete_recursos_practicas(recursoPractica)"></button>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-col-12">
+                                        <p-messages [(value)]="msgs"></p-messages>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <label for="carrer"><b>Recursos Requeridos Teóricos</b></label><br>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText placeholder="Ingrese recursos requeridos teóricos."
+                                                [disabled]="variableVisualizacion" [(ngModel)]="recursoTeoricoText">
+                                            <button type="button" pButton pRipple label="Agregar Recursos Requeridos Teóricos"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
+                                                (click)="add_recursos_teoricos($event)"></button>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <br>
+                                        <p-table [value]="recursosTeoricos" class="p-text-uppercase">
+                                            <ng-template pTemplate="caption">Lista Recursos Requeridos Teóricos</ng-template>
+                                            <ng-template pTemplate="body" let-recursoTeorico>
+                                                <tr>
+                                                    <td>{{ recursoTeorico }}</td>
+                                                    <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacion"
+                                                            (click)="delete_recursos_teoricos(recursoTeorico)"></button>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-col-12">
+                                        <p-messages [(value)]="msgs"></p-messages>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <label for="carrer"><b>Estrategia de Aprendizaje</b></label><br>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText placeholder="Ingrese estrategia de aprendizaje."
+                                                [disabled]="variableVisualizacion" [(ngModel)]="estrategiaAprendizajeText">
+                                            <button type="button" pButton pRipple label="Agregar Estrategias de Aprendizaje"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
+                                                (click)="add_estrategiasAprendizajes($event)"></button>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <br>
+                                        <p-table [value]="estrategiasAprendizajes" class="p-text-uppercase">
+                                            <ng-template pTemplate="caption">Lista de Estrategias de Aprendizaje</ng-template>
+                                            <ng-template pTemplate="body" let-estrategiaAprendizaje>
+                                                <tr>
+                                                    <td>{{ estrategiaAprendizaje }}</td>
+                                                    <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacion"
+                                                            (click)="delete_estrategiasAprendizajes(estrategiaAprendizaje)"></button>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-col-12">
+                                        <p-messages [(value)]="msgs"></p-messages>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <label for="carrer"><b>Estrategia de Enseñanza</b></label><br>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText placeholder="Ingrese estrategia de enseñanza."
+                                                [disabled]="variableVisualizacion" [(ngModel)]="estrategiaEnsenanzaText">
+                                            <button type="button" pButton pRipple label="Agregar Estrategias de Enseñanza"
+                                                [disabled]="variableVisualizacion" class="p-text-uppercase"
+                                                (click)="add_estrategiasEnsenanzas($event)"></button>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6">
+                                        <br>
+                                        <p-table [value]="estrategiasEnsenanzas" class="p-text-uppercase">
+                                            <ng-template pTemplate="caption">Lista de Estrategias de Enseñanza</ng-template>
+                                            <ng-template pTemplate="body" let-estrategiaEnsenanza>
+                                                <tr>
+                                                    <td>{{ estrategiaEnsenanza }}</td>
+                                                    <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacion"
+                                                            (click)="delete_estrategiasEnsenanzas(estrategiaEnsenanza)"></button>
                                                     </td>
                                                 </tr>
                                             </ng-template>
@@ -624,9 +793,19 @@
                                 <div class="p-fluid p-formgrid p-grid">
                                     <div class="p-field p-col-12">
                                         <label><b>Observaciones</b></label>
-                                        <textarea [rows]="10" pInputTextarea [disabled]="variableVisualizacion"
-                                            placeholder="Ingrese las observaciones del curso"
+                                        <textarea [rows]="5" pInputTextarea [disabled]="variableVisualizacion"
+                                            placeholder="Ingrese las observaciones del curso" class="p-text-uppercase"
                                             [(ngModel)]="curso.observation"></textarea>
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="p-col-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12">
+                                        <label><b>Proyecto del Curso</b></label>
+                                        <textarea [rows]="5" pInputTextarea [disabled]="variableVisualizacion"
+                                            placeholder="Ingrese el proyecto del curso" class="p-text-uppercase"
+                                            [(ngModel)]="curso.project"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -649,58 +828,32 @@
                         </div>
                     </p-tabPanel>
 
-                    <!-- planificacion -->
-                    <p-tabPanel *ngIf="this.visualizarPlanificacion" header="Planificación" leftIcon="pi pi-chart-bar">
+                    <!-- planificacion inicio  -->
+                    <p-tabPanel *ngIf="visualizarPlanificacion" header="Planificación" leftIcon="pi pi-chart-bar">
                         <div class="p-grid">
                             <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-3">
-                                        <label for="period"><b>Curso</b></label>
-                                        <p-dropdown [options]="list_courses_existing" optionLabel="name"
-                                            placeholder="Ingrese el tipo de curso" [(ngModel)]="tipoCursoSeleccionado">
-                                        </p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="name"><b>Código del Curso</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese el código del curso" [(ngModel)]="planning.code">
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="name"><b>Record del Curso</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese el record del curso" [(ngModel)]="planning.record">
-                                    </div>
-                                    <div class="p-field p-col-3">
+                                <div class="p-fluid p-formgrid p-grid">                                 
+                                    <div class="p-field p-col-4">
                                         <label for="fecha"><b>Fecha Creación</b></label>
-                                        <p-calendar [(ngModel)]="planning.fechaCreacion" dateFormat="yy-mm-dd"
-                                            placeholder="Ingrese la fecha de creación del curso" disabled></p-calendar>
+                                        <p-calendar [(ngModel)]="planning.dateCreation" dateFormat="yy-mm-dd" disabled
+                                            placeholder="Ingrese la fecha de creación del curso"></p-calendar>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-6">
+                                    <div class="p-field p-col-4">
                                         <label for="school_period"><b>Período</b></label>
                                         <p-dropdown [options]="list_school_period" optionLabel="name"
+                                            [disabled]="variableVisualizacionPlanificacion"
                                             placeholder="Ingrese el periodo del curso"
                                             [(ngModel)]="periodoPlanificacionSeleccionado"></p-dropdown>
                                     </div>
-                                    <div class="p-field p-col-6">
+                                    <div class="p-field p-col-4">
                                         <label for="teacher"><b>Responsable</b></label>
                                         <p-dropdown [options]="list_teacher" optionLabel="user.username"
+                                            [disabled]="variableVisualizacionPlanificacion"
                                             placeholder="Ingrese el responsable del curso"
                                             [(ngModel)]="profesorSeleccionado"></p-dropdown>
                                     </div>
-                                    <!--  <div class="p-field p-col-3">
-<label for="period"><b>Estado</b></label>
-<p-dropdown [options]="list_course_type" optionLabel="name"  placeholder="Ingrese el estado" [(ngModel)]="tipoCursoSeleccionado"></p-dropdown>
-</div>  -->
-                                    <!--  <div class="p-field p-col-4">
-<label for="status_cecy"><b>Estatus</b></label>
-<p-dropdown [options]="list_status_cecy" optionLabel="name"  placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado"></p-dropdown>
-</div>   -->
                                 </div>
-                            </div>
+                            </div>                          
                             <div class="p-col-12">
                                 <div class="p-fluid p-formgrid p-grid">
                                     <div class="p-col-12">
@@ -710,180 +863,373 @@
                                         <label for="carrer"><b>Necesidades</b></label><br>
                                         <div class="p-inputgroup">
                                             <input type="text" pInputText placeholder="Ingrese una necesidad."
+                                                [disabled]="variableVisualizacionPlanificacion" class="p-text-uppercase"
                                                 [(ngModel)]="necesidad_planningText">
                                             <button type="button" pButton pRipple label="Agregar Necesidad"
+                                                [disabled]="variableVisualizacionPlanificacion"
                                                 (click)="add_necesidad_planning($event)"></button>
                                         </div>
                                     </div>
                                     <div class="p-field p-col-6">
                                         <br>
-                                        <p-table [value]="necesidades_planning">
+                                        <p-table [value]="necesidades_planning" class="p-text-uppercase">
                                             <ng-template pTemplate="caption">Listado de Necesidades</ng-template>
                                             <ng-template pTemplate="body" let-necesidad_planning>
                                                 <tr>
                                                     <td>{{ necesidad_planning }}</td>
                                                     <td><button type="button" pButton label="Borrar"
+                                                            [disabled]="variableVisualizacionPlanificacion"
                                                             (click)="delete_necesidad_planning(necesidad_planning)"></button>
                                                     </td>
                                                 </tr>
                                             </ng-template>
                                         </p-table>
                                     </div>
+                                    <div class="p-col-12" style="margin-top: 5%;">
+                                        <div class="p-fluid p-formgrid p-grid">
+                                            <div class="p-field p-col-4"></div>
+                                            <div class="p-field p-col-4" *ngIf="botonGuardarPlanificacion">
+                                                <button pButton type="button" label="Guardar Planificación"
+                                                    icon="pi pi-save" iconPos="right" class="p-button-success"
+                                                    (click)="guardarPlanificacion()"></button>
+                                            </div>
+                                            <div class="p-field p-col-4" *ngIf="botonModificarPlanificacion">
+                                                <button pButton type="button" label="Actualizar Planificación"
+                                                    icon="pi pi-save" iconPos="right" class="p-button-success"
+                                                    (click)="actualizarPlanificacion()"></button>
+                                            </div>
+                                            <div class="p-field p-col-4"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </p-tabPanel>
-                    <p-tabPanel *ngIf="this.visualizarPlanificacion" header="Detalle Planificación"
+
+                    <p-tabPanel *ngIf="visualizarDetallePlanificacion" header="Detalle Planificación"
                         leftIcon="pi pi-globe">
-                        <div class="p-grid">
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-3">
-                                        <label for="fechaInicio"><b>Fecha de Inicio</b></label>
-                                        <p-calendar [(ngModel)]="planning.fechaInicio" dateFormat="yy-mm-dd"
-                                            placeholder="Ingrese la fecha de inicio del curso"></p-calendar>
+                        
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Agregar Detalle Planificación
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="fechaFinalizacion"><b>Fecha de Finalización</b></label>
-                                        <p-calendar [(ngModel)]="planning.fechaFinalizacion"
-                                            (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
-                                            placeholder="Ingrese la fecha de finalización del curso"></p-calendar>
+                                    <div class="modal-body">
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateStart"><b>Fecha de Inicio</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateStart" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de inicio del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateEnd"><b>Fecha de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateEnd"
+                                                        (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de finalización del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateFinal"><b>Fecha Real de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateFinal" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha real de finalización del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Números de días</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese los números de días" [(ngModel)]="plannig_details.days"
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-4">
+                                                    <label for="day"><b>Días desarrollo del Curso</b></label>
+                                                    <p-dropdown [options]="list_day" optionLabel="name"
+                                                        placeholder="Ingrese los días a desarrollarse el curso"
+                                                        [(ngModel)]="diaSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="start_time"><b>Hora de Inicio</b></label>
+                                                    <p-dropdown [options]="list_start_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de inicio del curso"
+                                                        [(ngModel)]="fechaInicioSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="end_time"><b>Hora de Finalización</b></label>
+                                                    <p-dropdown [options]="list_end_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de finalización"
+                                                        [(ngModel)]="fechaFinSeleccionado"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="classroom"><b>Aula</b></label>
+                                                    <p-dropdown [options]="list_classroom" optionLabel="name"
+                                                        placeholder="Ingrese el aula del curso" [(ngModel)]="aulaSeleccionada">
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Capacidad</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese la capacidad del curso" [(ngModel)]="plannig_details.capacity"
+                                                        (keyup)="plannig_details.capacity = formatoCampo(plannig_details.capacity, '0123456789', 3, 2);"
+                                                        disabled>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="paralel"><b>Paralelo</b></label>
+                                                    <p-dropdown [options]="list_paralel" optionLabel="name"
+                                                        placeholder="Ingrese el paralelo del curso"
+                                                        [(ngModel)]="paraleloSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="workday_type"><b>Jornada</b></label>
+                                                    <p-dropdown [options]="list_workday_type" optionLabel="name"
+                                                        placeholder="Ingrese la jornada laboral del curso"
+                                                        [(ngModel)]="jornadaSeleccionada"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Código del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el código del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.code_certificate">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Estado del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el estado del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.state_certificate">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Instructor</b></label>
+                                                    <p-dropdown [options]="list_teacher" optionLabel="user.username"
+                                                        placeholder="Ingrese el instructor del curso"
+                                                        [(ngModel)]="instructorSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="status_cecy"><b>Estatus</b></label>
+                                                    <p-dropdown [options]="list_status_cecy" optionLabel="name"
+                                                        placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado">
+                                                    </p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12">
+                                                    <label><b>Resumen</b></label>
+                                                    <textarea [rows]="2" pInputTextarea
+                                                        placeholder="Ingrese el resumen de la planificacion del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.resumen_planning"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="fechaFinal"><b>Fecha Real de Finalización</b></label>
-                                        <p-calendar [(ngModel)]="planning.fechaFinal" dateFormat="yy-mm-dd"
-                                            placeholder="Ingrese la fecha real de finalización del curso"></p-calendar>
+                                    <div class="modal-footer">                                        
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" (click)="guardarDetallePlanificacion()">Guardar</button>
                                     </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="carrer"><b>Números de días</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese los números de días" [(ngModel)]="planning.days"
-                                            disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-4">
-                                        <label for="day"><b>Días desarrollo del Curso</b></label>
-                                        <p-dropdown [options]="list_day" optionLabel="name"
-                                            placeholder="Ingrese los días a desarrollarse el curso"
-                                            [(ngModel)]="diaSeleccionado"></p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-4">
-                                        <label for="start_time"><b>Hora de Inicio</b></label>
-                                        <p-dropdown [options]="list_start_time" optionLabel="name"
-                                            placeholder="Ingrese la hora de inicio del curso"
-                                            [(ngModel)]="fechaInicioSeleccionado"></p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-4">
-                                        <label for="end_time"><b>Hora de Finalización</b></label>
-                                        <p-dropdown [options]="list_end_time" optionLabel="name"
-                                            placeholder="Ingrese la hora de finalización"
-                                            [(ngModel)]="fechaFinSeleccionado"></p-dropdown>
-                                    </div>
-                                    <!--<div class="p-field p-col-3">
-<label for="period"><b>Planificación</b></label>
-<p-dropdown [options]="list_course_type" optionLabel="name"  placeholder="Ingrese la planificación del curso" [(ngModel)]="tipoCursoSeleccionado"></p-dropdown>
-</div>-->
-                                </div>
-                            </div>
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-3">
-                                        <label for="classroom"><b>Aula</b></label>
-                                        <p-dropdown [options]="list_classroom" optionLabel="name"
-                                            placeholder="Ingrese el aula del curso" [(ngModel)]="aulaSeleccionada">
-                                        </p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="carrer"><b>Capacidad</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese la capacidad del curso" [(ngModel)]="curso.capacity"
-                                            (keyup)="curso.capacity = formatoCampo(curso.capacity, '0123456789', 3, 2);" disabled>
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="paralel"><b>Paralelo</b></label>
-                                        <p-dropdown [options]="list_paralel" optionLabel="name"
-                                            placeholder="Ingrese el paralelo del curso"
-                                            [(ngModel)]="paraleloSeleccionado"></p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="WORKDAY_TYPE"><b>Jornada Laboral</b></label>
-                                        <p-dropdown [options]="list_WORKDAY_TYPE" optionLabel="name"
-                                            placeholder="Ingrese la jornada laboral del curso"
-                                            [(ngModel)]="jornadaSeleccionada"></p-dropdown>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-3">
-                                        <label for="period"><b>Código del Certificado</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese el código del certificado del curso"
-                                            [(ngModel)]="planning.code_certificate">
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="period"><b>Estado del Certificado</b></label>
-                                        <input id="name" type="text" pInputText
-                                            placeholder="Ingrese el estado del certificado del curso"
-                                            [(ngModel)]="planning.state_certificate">
-                                    </div>
-                                    <!--<div class="p-field p-col-3">
-<label for="period"><b>Detalle del Registro</b></label>
-<input id="name" type="text" pInputText placeholder="Ingrese el destalle del registro del curso" 
-[(ngModel)]="curso.capacity">
-</div>-->
-                                    <div class="p-field p-col-3">
-                                        <label for="carrer"><b>Instructor</b></label>
-                                        <p-dropdown [options]="list_teacher" optionLabel="user.username"
-                                            placeholder="Ingrese el instructor del curso"
-                                            [(ngModel)]="instructorSeleccionado"></p-dropdown>
-                                    </div>
-                                    <div class="p-field p-col-3">
-                                        <label for="status_cecy"><b>Estatus</b></label>
-                                        <p-dropdown [options]="list_status_cecy" optionLabel="name"
-                                            placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado">
-                                        </p-dropdown>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--  <div class="p-col-12">
-<div class="p-fluid p-formgrid p-grid">                                                         
-<div class="p-field p-col-6">
-<label for="carrer"><b>Estado</b></label>                                       
-<p-dropdown [options]="list_course_type" optionLabel="name"  placeholder="Ingrese el estado" [(ngModel)]="tipoCursoSeleccionado"></p-dropdown>
-</div>   
-                                                                                                
-</div>
-</div>  -->
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-12">
-                                        <label><b>Resumen</b></label>
-                                        <textarea [rows]="10" pInputTextarea
-                                            placeholder="Ingrese el resumen de la planificacion del curso"
-                                            [(ngModel)]="planning.resumen_planning"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="p-col-12">
-                                <div class="p-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-4"></div>
-                                    <div class="p-field p-col-4">
-                                        <button pButton type="button" label="Guardar Planificación" icon="pi pi-save"
-                                            iconPos="right" class="p-button-success" (click)="guardarPlanificacion()"></button>
-                                    </div>
-                                    <div class="p-field p-col-4"></div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Editar Detalle Planificación
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateStart"><b>Fecha de Inicio</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateStart" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de inicio del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateEnd"><b>Fecha de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateEnd"
+                                                        (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de finalización del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateFinal"><b>Fecha Real de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateFinal" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha real de finalización del curso"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Números de días</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese los números de días" [(ngModel)]="plannig_details.days"
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-4">
+                                                    <label for="day"><b>Días desarrollo del Curso</b></label>
+                                                    <p-dropdown [options]="list_day" optionLabel="name"
+                                                        placeholder="Ingrese los días a desarrollarse el curso"
+                                                        [(ngModel)]="diaSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="start_time"><b>Hora de Inicio</b></label>
+                                                    <p-dropdown [options]="list_start_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de inicio del curso"
+                                                        [(ngModel)]="fechaInicioSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="end_time"><b>Hora de Finalización</b></label>
+                                                    <p-dropdown [options]="list_end_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de finalización"
+                                                        [(ngModel)]="fechaFinSeleccionado"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="classroom"><b>Aula</b></label>
+                                                    <p-dropdown [options]="list_classroom" optionLabel="name"
+                                                        placeholder="Ingrese el aula del curso" [(ngModel)]="aulaSeleccionada">
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Capacidad</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese la capacidad del curso" [(ngModel)]="plannig_details.capacity"
+                                                        (keyup)="plannig_details.capacity = formatoCampo(plannig_details.capacity, '0123456789', 3, 2);"
+                                                        disabled>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="paralel"><b>Paralelo</b></label>
+                                                    <p-dropdown [options]="list_paralel" optionLabel="name"
+                                                        placeholder="Ingrese el paralelo del curso"
+                                                        [(ngModel)]="paraleloSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="workday_type"><b>Jornada</b></label>
+                                                    <p-dropdown [options]="list_workday_type" optionLabel="name"
+                                                        placeholder="Ingrese la jornada laboral del curso"
+                                                        [(ngModel)]="jornadaSeleccionada"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Instructor</b></label>
+                                                    <p-dropdown [options]="list_teacher" optionLabel="user.username"
+                                                        placeholder="Ingrese el instructor del curso"
+                                                        [(ngModel)]="instructorSeleccionado"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="status_cecy"><b>Estatus</b></label>
+                                                    <p-dropdown [options]="list_status_cecy" optionLabel="name"
+                                                        placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado">
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Código del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el código del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.code_certificate">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Estado del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el estado del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.state_certificate">
+                                                </div>                                               
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12">
+                                                    <label><b>Resumen</b></label>
+                                                    <textarea [rows]="2" pInputTextarea
+                                                        placeholder="Ingrese el resumen de la planificacion del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.resumen_planning"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">                                        
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" (click)="actualizarDetallePlanificacion()">Actualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-12" style="margin-top: 20px !important;">
+                                <h5>Listado de Detalles Planificación</h5>
+                            </div>
+                            <div class="p-col-12" style="text-align: right; align-items: right; align-content: right;" >
+                                <button pButton type="button" label="Agregar Detalle Planificación"
+                                    icon="pi pi-plus" iconPos="right" class="p-button-success" data-toggle="modal"
+                                    data-target="#exampleModal"></button></div>
+                            <div class="p-col-12">
+                                <p-table [value]="list_planning_details" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                                    currentPageReportTemplate="Visualizando registro {first} al {last} de {totalRecords} detalles planificación"
+                                    [rowsPerPageOptions]="[10,25,50]">
+                                    <ng-template pTemplate="header">
+                                        <tr style="text-align: center !important;">
+                                            <th><b>Instructor</b></th>
+                                            <th><b>Aula</b></th>
+                                            <th><b>Fecha Inicio</b></th>
+                                            <th><b>Fecha Finalización</b></th>                                                                               
+                                            <th style="width: 150px !important;"><b>Editar</b></th>
+                                            <th style="width: 150px !important;"><b>Eliminar</b></th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-detail>
+                                    <tr>
+                                        <td>{{ detail.instructor }}</td>
+                                        <td>{{ detail.classroom }}</td>                                     
+                                        <td>{{ detail.dateStart | date:'yyyy-MM-dd'}}</td>
+                                        <td>{{ detail.dateFinal | date:'yyyy-MM-dd'}}</td>                         
+                                        <td>
+                                        <button pButton type="button" icon="pi pi-pencil" class="p-button-help" style="height: 40px; width: 40px;" (click)="modificarDetallePlanificacion(detail)"></button>
+                                       </td>
+                                        <td>
+                                        <button pButton type="button" icon="pi pi-trash" class="p-button-danger" style="height: 40px; width: 40px;" (click)="eliminarDetallePlanificacion(detail)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                    <ng-template pTemplate="paginatorleft">
+                                        <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+                                    </ng-template>
+                                    <ng-template pTemplate="paginatorright">
+                                        <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text">
+                                        </p-button>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
                     </p-tabPanel>
-                    <!-- planificacion -->
-
-
+                    <!-- planificacion final -->
                 </p-tabView>
             </div>
         </div>

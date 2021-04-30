@@ -37,6 +37,11 @@ import { from } from 'rxjs';
 import { InstructorComponent } from './instructor/instructor.component';
 import { CoursesComponent } from './instructor/courses/courses.component';
 import { GlobalsService } from 'src/app/services/globals/globals.service';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { MessageService } from 'primeng/api';
+import { ParticipantsComponent } from './instructor/participants/participants.component';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
     imports: [
@@ -67,13 +72,15 @@ import { GlobalsService } from 'src/app/services/globals/globals.service';
         StepsModule,
         ReactiveFormsModule,
         DialogModule,
-        AutoCompleteModule
-
+        AutoCompleteModule,
+        MessagesModule,
+        MessageModule,
+        CardModule
     ],
-    declarations: [InstructorComponent, CoursesComponent],
+    declarations: [InstructorComponent, CoursesComponent, ParticipantsComponent],
     providers: [
        CecyService,
-       GlobalsService
+       GlobalsService,MessageService
     ],
 })
 export class CecyModule {

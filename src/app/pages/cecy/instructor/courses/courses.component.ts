@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CecyService } from 'src/app/services/cecy/cecy.service';
-import { Curso } from 'src/app/models/cecy/curso';
 import { Role, User } from 'src/app/models/auth/models.index';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
+
 
 @Component({
   selector: 'app-cecy-courses',
@@ -14,10 +16,17 @@ export class CoursesComponent implements OnInit {
   url_list = "list";
   user: User;
   role: Role;
+
+  msgs: any;
   
   lista_cursos : any = [];
+  lista_cursos_inactivos : any = [];
   
-  constructor(private cecyService: CecyService,private _router: Router) { }
+  @ViewChild('dt') table: Table;
+
+  
+  constructor(private cecyService: CecyService,private _router: Router,private messageService: MessageService,
+    private _spinner: NgxSpinnerService) { }
 
   ngOnInit(): void {
     this.getLocalStorage();
@@ -30,6 +39,7 @@ export class CoursesComponent implements OnInit {
       this.cargarCursos(this.user.id);
     } else if(this.role.id == 12){
       this.cargarAllCursos();
+      this.cargarCursosInactivos();
     }
   }
 
@@ -61,7 +71,19 @@ export class CoursesComponent implements OnInit {
     );
   }
 
-  modificarCurso(cursoSeleccionado:any){
+  public cargarCursosInactivos(){
+    this.cecyService.get("disabled", "").subscribe(
+      (res: any) => {
+        console.log(res);
+        this.lista_cursos_inactivos = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  public modificarCurso(cursoSeleccionado:any){
     console.log(cursoSeleccionado);
     this._router.navigate(['/cecy/forms/edit/'+cursoSeleccionado.id]);
   }
@@ -72,8 +94,85 @@ export class CoursesComponent implements OnInit {
   }
 
   public planificarCurso(cursoSeleccionado:any){
-    console.log(cursoSeleccionado);
     this._router.navigate(['/cecy/forms/planning/'+cursoSeleccionado.id]);  
   }
+
+  public visualizarCursoPlanificacion(cursoSeleccionado:any){
+    this._router.navigate(['/cecy/forms/planning-curso/'+cursoSeleccionado.id]);  
+  }
+
+  public visualizarPlanificacion(cursoSeleccionado:any){
+    this._router.navigate(['/cecy/forms/planning-view/'+cursoSeleccionado.id]);  
+  }
+
+  public modificarPlanificacion(cursoSeleccionado:any){
+    this._router.navigate(['/cecy/forms/planning-edit/'+cursoSeleccionado.id]);  
+  }
+
+  public eliminarCurso(cursoSeleccionado: any){
+
+    this._spinner.show();
+    var datos = {
+      id : cursoSeleccionado.id
+    }
+
+    this.cecyService.post("delete", datos, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          console.log('Curso eliminado Exitosamente.');
+
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'success',
+            summary: res['msg']['summary'],
+            detail: res['msg']['detail']
+          });
+
+          this.getLocalStorage();
+
+          this._spinner.hide();
+
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }   
+
+  public activarCurso(cursoSeleccionado: any){
+
+    this._spinner.show();
+    var datos = {
+      id : cursoSeleccionado.id
+    }
+
+    this.cecyService.post("enabled", datos, "").subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res.msg.code == '200') {
+          console.log('Curso Activado Exitosamente.');
+
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'success',
+            summary: res['msg']['summary'],
+            detail: res['msg']['detail']
+          });
+
+          this.getLocalStorage();
+
+          this._spinner.hide();
+
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  } 
 
 }
