@@ -28,10 +28,10 @@ export class AppComponent {
             first_lastname: 'Herrera',
             second_lastname: 'Herrera',
         }
-       /* this.role = {
+       /*  this.role = {
             id: 3,
             name: "TEACHER"
-        }  *//*  */
+        }  */
         this.role = {
             id: 12,
             name: "CECY_COORDINATOR"

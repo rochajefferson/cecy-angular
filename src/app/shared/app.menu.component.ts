@@ -17,7 +17,7 @@ import {environment} from '../../environments/environment';
                     <i class="pi pi-lock-open" *ngIf="!app.staticMenuActive"></i>
                 </a>
                 <a routerLink="/">
-                    <img alt="logo" [src]="STORAGE_URL+institution.logo"/>
+                    <img alt="logo" src="assets/layout/images/spinner.png"/>
                     <span class="app-name">{{institution.short_name}}</span>
                 </a>
             </div>

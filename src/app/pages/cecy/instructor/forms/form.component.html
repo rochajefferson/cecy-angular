@@ -15,7 +15,7 @@
                     <div class="p-field p-col-3">
                         <label for="name"><b>Código del Curso</b></label>
                         <input id="name" type="text" pInputText placeholder="Ingrese el código del curso"
-                            [(ngModel)]="planning.code" [disabled]="variableVisualizacionPlanificacion" class="p-text-uppercase">
+                            [(ngModel)]="planning.code" [disabled]="bloquearCodigoCurso" class="p-text-uppercase">
                     </div>
                     <div class="p-field p-col-3">
                         <label for="carrer"><b>Carrera</b></label>
@@ -925,18 +925,17 @@
                                             <div class="p-fluid p-formgrid p-grid">
                                                 <div class="p-field p-col-3">
                                                     <label for="dateStart"><b>Fecha de Inicio</b></label>
-                                                    <p-calendar [(ngModel)]="plannig_details.dateStart" dateFormat="yy-mm-dd"
+                                                    <p-calendar [(ngModel)]="plannig_details.dateStart" dateFormat="yy-mm-dd" [minDate]="minDate"
                                                         placeholder="Ingrese la fecha de inicio del curso"></p-calendar>
                                                 </div>
                                                 <div class="p-field p-col-3">
                                                     <label for="dateEnd"><b>Fecha de Finalización</b></label>
-                                                    <p-calendar [(ngModel)]="plannig_details.dateEnd"
-                                                        (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
-                                                        placeholder="Ingrese la fecha de finalización del curso"></p-calendar>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateEnd" dateFormat="yy-mm-dd" [minDate]="minDate"
+                                                    placeholder="Ingrese la fecha de finalización del curso" (ngModelChange)="validarFecha()"></p-calendar>
                                                 </div>
                                                 <div class="p-field p-col-3">
                                                     <label for="dateFinal"><b>Fecha Real de Finalización</b></label>
-                                                    <p-calendar [(ngModel)]="plannig_details.dateFinal" dateFormat="yy-mm-dd"
+                                                    <p-calendar [(ngModel)]="plannig_details.dateFinal" dateFormat="yy-mm-dd" [minDate]="minDate"
                                                         placeholder="Ingrese la fecha real de finalización del curso"></p-calendar>
                                                 </div>
                                                 <div class="p-field p-col-3">
@@ -999,19 +998,7 @@
                                             </div>
                                         </div>
                                         <div class="p-col-12">
-                                            <div class="p-fluid p-formgrid p-grid">
-                                                <div class="p-field p-col-3">
-                                                    <label for="period"><b>Código del Certificado</b></label>
-                                                    <input id="name" type="text" pInputText
-                                                        placeholder="Ingrese el código del certificado del curso" class="p-text-uppercase"
-                                                        [(ngModel)]="plannig_details.code_certificate">
-                                                </div>
-                                                <div class="p-field p-col-3">
-                                                    <label for="period"><b>Estado del Certificado</b></label>
-                                                    <input id="name" type="text" pInputText
-                                                        placeholder="Ingrese el estado del certificado del curso" class="p-text-uppercase"
-                                                        [(ngModel)]="plannig_details.state_certificate">
-                                                </div>
+                                            <div class="p-fluid p-formgrid p-grid">                                               
                                                 <div class="p-field p-col-3">
                                                     <label for="carrer"><b>Instructor</b></label>
                                                     <p-dropdown [options]="list_teacher" optionLabel="user.username"
@@ -1023,6 +1010,18 @@
                                                     <p-dropdown [options]="list_status_cecy" optionLabel="name"
                                                         placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado">
                                                     </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Código del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el código del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.code_certificate">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Estado del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el estado del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.state_certificate">
                                                 </div>
                                             </div>
                                         </div>
@@ -1182,14 +1181,150 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="exampleModalView" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Visualizar Detalle Planificación
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateStart"><b>Fecha de Inicio</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateStart" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de inicio del curso" [disabled]="true"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateEnd"><b>Fecha de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateEnd"
+                                                        (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha de finalización del curso" [disabled]="visualizarDetallePlanificacionView"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="dateFinal"><b>Fecha Real de Finalización</b></label>
+                                                    <p-calendar [(ngModel)]="plannig_details.dateFinal" dateFormat="yy-mm-dd"
+                                                        placeholder="Ingrese la fecha real de finalización del curso" [disabled]="visualizarDetallePlanificacionView"></p-calendar>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Números de días</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese los números de días" [(ngModel)]="plannig_details.days"
+                                                        [disabled]="visualizarDetallePlanificacionView">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-4">
+                                                    <label for="day"><b>Días desarrollo del Curso</b></label>
+                                                    <p-dropdown [options]="list_day" optionLabel="name"
+                                                        placeholder="Ingrese los días a desarrollarse el curso"
+                                                        [(ngModel)]="diaSeleccionado" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="start_time"><b>Hora de Inicio</b></label>
+                                                    <p-dropdown [options]="list_start_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de inicio del curso"
+                                                        [(ngModel)]="fechaInicioSeleccionado" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-4">
+                                                    <label for="end_time"><b>Hora de Finalización</b></label>
+                                                    <p-dropdown [options]="list_end_time" optionLabel="name"
+                                                        placeholder="Ingrese la hora de finalización"
+                                                        [(ngModel)]="fechaFinSeleccionado" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="classroom"><b>Aula</b></label>
+                                                    <p-dropdown [options]="list_classroom" optionLabel="name"
+                                                        placeholder="Ingrese el aula del curso" [(ngModel)]="aulaSeleccionada" [disabled]="visualizarDetallePlanificacionView">
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Capacidad</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese la capacidad del curso" [(ngModel)]="plannig_details.capacity"
+                                                        (keyup)="plannig_details.capacity = formatoCampo(plannig_details.capacity, '0123456789', 3, 2);"
+                                                        [disabled]="visualizarDetallePlanificacionView">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="paralel"><b>Paralelo</b></label>
+                                                    <p-dropdown [options]="list_paralel" optionLabel="name"
+                                                        placeholder="Ingrese el paralelo del curso"
+                                                        [(ngModel)]="paraleloSeleccionado" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="workday_type"><b>Jornada</b></label>
+                                                    <p-dropdown [options]="list_workday_type" optionLabel="name"
+                                                        placeholder="Ingrese la jornada laboral del curso"
+                                                        [(ngModel)]="jornadaSeleccionada" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-3">
+                                                    <label for="carrer"><b>Instructor</b></label>
+                                                    <p-dropdown [options]="list_teacher" optionLabel="user.username"
+                                                        placeholder="Ingrese el instructor del curso"
+                                                        [(ngModel)]="instructorSeleccionado" [disabled]="visualizarDetallePlanificacionView"></p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="status_cecy"><b>Estatus</b></label>
+                                                    <p-dropdown [options]="list_status_cecy" optionLabel="name"
+                                                        placeholder="Ingrese el estatus" [(ngModel)]="estatusSeleccionado" [disabled]="visualizarDetallePlanificacionView">
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Código del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el código del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.code_certificate" [disabled]="visualizarDetallePlanificacionView">
+                                                </div>
+                                                <div class="p-field p-col-3">
+                                                    <label for="period"><b>Estado del Certificado</b></label>
+                                                    <input id="name" type="text" pInputText
+                                                        placeholder="Ingrese el estado del certificado del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.state_certificate" [disabled]="visualizarDetallePlanificacionView">
+                                                </div>                                               
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12">
+                                                    <label><b>Resumen</b></label>
+                                                    <textarea [rows]="2" pInputTextarea
+                                                        placeholder="Ingrese el resumen de la planificacion del curso" class="p-text-uppercase"
+                                                        [(ngModel)]="plannig_details.resumen_planning" [disabled]="visualizarDetallePlanificacionView"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">                                        
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="p-grid">
                             <div class="p-col-12" style="margin-top: 20px !important;">
                                 <h5>Listado de Detalles Planificación</h5>
                             </div>
                             <div class="p-col-12" style="text-align: right; align-items: right; align-content: right;" >
                                 <button pButton type="button" label="Agregar Detalle Planificación"
-                                    icon="pi pi-plus" iconPos="right" class="p-button-success" data-toggle="modal"
-                                    data-target="#exampleModal"></button></div>
+                                    icon="pi pi-plus" iconPos="right" class="p-button-success" (click)="abrirModalDetalle()"></button></div>
                             <div class="p-col-12">
                                 <p-table [value]="list_planning_details" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
                                     currentPageReportTemplate="Visualizando registro {first} al {last} de {totalRecords} detalles planificación"
@@ -1202,6 +1337,7 @@
                                             <th><b>Fecha Finalización</b></th>                                                                               
                                             <th style="width: 150px !important;"><b>Editar</b></th>
                                             <th style="width: 150px !important;"><b>Eliminar</b></th>
+                                            <th style="width: 150px !important;"><b>Visualizar</b></th>
                                         </tr>
                                     </ng-template>
                                     <ng-template pTemplate="body" let-detail>
@@ -1215,6 +1351,9 @@
                                        </td>
                                         <td>
                                         <button pButton type="button" icon="pi pi-trash" class="p-button-danger" style="height: 40px; width: 40px;" (click)="eliminarDetallePlanificacion(detail)"></button>
+                                        </td>
+                                        <td>
+                                            <button pButton type="button" icon="pi pi-eye" class="p-button-info" style="height: 40px; width: 40px;" (click)="viewDetallePlanificacion(detail)"></button>
                                         </td>
                                     </tr>
                                 </ng-template>

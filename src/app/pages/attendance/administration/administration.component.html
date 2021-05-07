@@ -129,7 +129,7 @@
          class="p-xl-3 p-lg-3 p-md-6 p-sm-12">
         <p-card (click)="selectInstitution(item)" class="p-text-center"
                 [styleClass]="item.id === institution.id?'background-card-selected':'background-card-noselected'">
-            <img [src]="STORAGE_URL+item.logo" alt="logo" height="50px"
+            <img src="assets/layout/images/spinner.png" alt="logo" height="50px"
                  class="p-button p-button-text">
             <br>
             <button type="button" pButton label="{{item.short_name}}" class="p-button-text"
@@ -211,10 +211,11 @@
                                         {{user.first_name + ' ' + user.second_name}}
                                     </p>
                                     <hr>
-                                    <img [src]="STORAGE_URL+user.avatar" alt="avatar"
+                                    <img src="assets/layout/images/login/authority2.png" alt="avatar"
                                          width="100px"
                                          height="100px"
                                          style="border-radius: 50%;">
+
 
                                     <img *ngIf="!user.attendance"
                                          src="assets/layout/images/pages/attendance/not_work.png" alt=""

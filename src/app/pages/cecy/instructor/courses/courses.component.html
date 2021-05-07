@@ -12,7 +12,7 @@
     
     <p-table #dt [value]="lista_cursos" [paginator]="true" [rows]="5" [showCurrentPageReport]="true" 
         currentPageReportTemplate="Visualizando registro {first} al {last} de {totalRecords} cursos" [rowsPerPageOptions]="[5,10,15]"
-        [globalFilterFields]="['name']">
+        [globalFilterFields]="['name','code','created_at','status']">
         
         <ng-template pTemplate="caption">
             <div class="table-header">

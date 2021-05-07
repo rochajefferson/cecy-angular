@@ -236,10 +236,14 @@ export class FormsComponent implements OnInit {
 
   visualizarPlanificacion = false;
   visualizarDetallePlanificacion = false;
+  visualizarDetallePlanificacionView = true;
 
   idCurso: any;
   idPlanning: any;
 
+  minDate : Date;
+
+  bloquearCodigoCurso = true;
 
   constructor(
     private cecyService: CecyService,
@@ -254,6 +258,8 @@ export class FormsComponent implements OnInit {
   ngOnInit() {
     this.planning.dateCreation = new Date();
     this.getLocalStorage();
+    this.minDate = new Date();
+    console.log('minDate',this.minDate)
   }
 
   public getLocalStorage() {
@@ -285,18 +291,21 @@ export class FormsComponent implements OnInit {
         this.botonGuardar = true;
         this.botonModificar = false;
         this.variableVisualizacion = false;
+        this.bloquearCodigoCurso = true;
       } else if (this.idCurso != undefined && this.variableConfiguracion == 'edit') {
         this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
         this.botonModificar = true;
         this.variableVisualizacion = false;
         this.variableVisualizacionPlanificacion = true;
+        this.bloquearCodigoCurso = true;
       } else if (this.idCurso != undefined && this.variableConfiguracion == 'view') {
         this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
         this.botonModificar = false;
         this.variableVisualizacion = true;
         this.variableVisualizacionPlanificacion = true;
+        this.bloquearCodigoCurso = true;
       } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning-curso') {
         this.cargarDatosFormulario(this.idCurso);
         this.botonGuardar = false;
@@ -310,6 +319,7 @@ export class FormsComponent implements OnInit {
         this.botonGuardar = false;
         this.botonModificar = false;
         this.variableVisualizacion = true;
+        this.bloquearCodigoCurso = false;
       } else if (this.idCurso != undefined && this.variableConfiguracion == 'planning-view') {
         this.cargarDatosFormularioPlanning(this.idCurso);
         this.botonGuardar = false;
@@ -328,6 +338,7 @@ export class FormsComponent implements OnInit {
         this.variableVisualizacion = true;
         this.variableVisualizacionPlanificacion = false;
         this.visualizarDetallePlanificacion = true;
+        this.bloquearCodigoCurso = false;
       }
 
     } else {
@@ -863,7 +874,17 @@ export class FormsComponent implements OnInit {
         }
       },
       err => {
+        this._spinner.hide();
         console.log(err);
+        if(err.status == 400){
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'error',
+            summary: 'Información',
+            detail: 'El curso que intenta crear ya se encuentra registrado en nuestra plataforma.'
+          });
+
+        }
       }
     );
 
@@ -1012,7 +1033,7 @@ export class FormsComponent implements OnInit {
   }
 
   public guardarDetallePlanificacion() {
-
+    this._spinner.show();
     this.plannig_details.course_id = this.idCurso == undefined ? 0 : this.idCurso;
     this.plannig_details.planning_id = this.idPlanning == undefined ? 0 : this.idPlanning;
     this.plannig_details.dateStart = moment(this.plannig_details.dateStart).format('YYYY-MM-DD');
@@ -1033,22 +1054,17 @@ export class FormsComponent implements OnInit {
         console.log(res);
         if (res.msg.code == '200') {
           console.log('Detalle Planificación Agregado Exitosamente.');
-
           $('#exampleModal').modal('toggle')
-
-          setTimeout(() => {
-            this.messageService.add({
-              key: 'msgToast',
-              severity: 'success',
-              summary: res['msg']['summary'],
-              detail: res['msg']['detail']
-            });
-          }, 2500);
-
-          setTimeout(() => {
-            this._router.navigate(['/cecy/courses']);
-          }, 4000);
           this._spinner.hide();
+
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'success',
+            summary: res['msg']['summary'],
+            detail: res['msg']['detail']
+          });
+          
+          this.listarDetallesPlanificacion();
         }
       },
       err => {
@@ -1060,7 +1076,26 @@ export class FormsComponent implements OnInit {
 
   public handleChange(e) {   
     var index = e.index;
-    console.log(index);
+    console.log('handleChange',index);
+    if(index == 1){
+      console.log(this.curso.capacity);
+      if(this.curso.capacity == ''){
+        this.messageService.add({
+          key: 'msgToast',
+          severity: 'warn',
+          summary: 'Alerta',
+          detail: 'El campo capacidad es requerido'
+        });
+      } else if(this.curso.place == ''){
+        this.messageService.add({
+          key: 'msgToast',
+          severity: 'warn',
+          summary: 'Alerta',
+          detail: 'El campo lugar es requerido'
+        });
+      }
+
+    } else
     if (index == 7) {
       this.listarDetallesPlanificacion();
     }
@@ -1152,6 +1187,61 @@ export class FormsComponent implements OnInit {
     $('#exampleModalEdit').modal('toggle');
   }
 
+  public viewDetallePlanificacion(detalleSeleccionado:any){ 
+    this.plannig_details = detalleSeleccionado;  
+
+    for (let j = 0; j < this.list_paralel.length; j++) {
+      if (this.list_paralel[j].id == this.plannig_details.paralel_id) {
+        this.paraleloSeleccionado = this.list_paralel[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_day.length; j++) {
+      if (this.list_day[j].id == this.plannig_details.develop_day_id) {
+        this.diaSeleccionado = this.list_day[j];
+      }
+    }       
+
+    for (let j = 0; j < this.list_status_cecy.length; j++) {
+      if (this.list_status_cecy[j].id == this.plannig_details.status_cecy_id) {
+        this.estatusSeleccionado = this.list_status_cecy[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_classroom.length; j++) {
+      if (this.list_classroom[j].id == this.plannig_details.classroom_id) {
+        this.aulaSeleccionada = this.list_classroom[j];
+      }
+    }
+
+    for (let j = 0; j < this.list_start_time.length; j++) {
+      if (this.list_start_time[j].id == this.plannig_details.start_time_id) {
+        this.fechaInicioSeleccionado = this.list_start_time[j];
+      }
+    }
+
+    
+    for (let j = 0; j < this.list_end_time.length; j++) {
+      if (this.list_end_time[j].id == this.plannig_details.end_time_id) {
+        this.fechaFinSeleccionado = this.list_end_time[j];
+      }
+    } 
+
+    for (let j = 0; j < this.list_teacher.length; j++) {
+      if (this.list_teacher[j].id == this.plannig_details.instructor_id) {
+        this.instructorSeleccionado = this.list_teacher[j];
+      }
+    }   
+
+    for (let j = 0; j < this.list_workday_type.length; j++) {
+      if (this.list_workday_type[j].id == this.plannig_details.workday_type_id) {
+        this.jornadaSeleccionada = this.list_workday_type[j];
+      }
+    }       
+
+    $('#exampleModalView').modal('toggle');
+  }
+
   public actualizarDetallePlanificacion() {
 
     this._spinner.show();
@@ -1175,18 +1265,18 @@ export class FormsComponent implements OnInit {
         if (res.msg.code == '200') {
           console.log('Detalle Planificación Agregado Exitosamente.');
 
-          setTimeout(() => {
-            this.messageService.add({
-              key: 'msgToast',
-              severity: 'success',
-              summary: res['msg']['summary'],
-              detail: res['msg']['detail']
-            });
-          }, 2500);
-
           this._spinner.hide();
+          $('#exampleModalEdit').modal('toggle');
+
+          this.messageService.add({
+            key: 'msgToast',
+            severity: 'success',
+            summary: res['msg']['summary'],
+            detail: res['msg']['detail']
+          });
+          
           this.listarDetallesPlanificacion();
-          $('#exampleModalEdit').modal('toggle')
+          
         }
       },
       err => {
@@ -1223,6 +1313,39 @@ export class FormsComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  public abrirModalDetalle(){
+    this.plannig_details = {
+      course_id: 0,
+      planning_id: 0,
+      plannig_details_id: 0,
+      dateStart: '',
+      dateEnd: '',
+      dateFinal: '',
+      days: '',
+      develop_day_id: '',
+      start_time_id: '',
+      end_time_id: '',
+      classroom_id: '',
+      capacity: '',
+      paralel_id: '',
+      workday_type_id: '',
+      code_certificate: '',
+      state_certificate: '',
+      instructor_id: '',
+      status_cecy_id: '',
+      resumen_planning: ''
+    }
+    this.diaSeleccionado = '';
+    this.fechaInicioSeleccionado = '';
+    this.fechaFinSeleccionado = '';
+    this.aulaSeleccionada = '';
+    this.paraleloSeleccionado = '';
+    this.jornadaSeleccionada = '';
+    this.instructorSeleccionado = '';
+    this.estatusSeleccionado = '';
+    $('#exampleModal').modal('show');
   }
 
 }

@@ -10,9 +10,10 @@
             <div class="col-md-8">
                 <span class="p-input-icon-left" style="width: 50% !important;">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" [(ngModel)]="identificacion" 
-                    placeholder="Buscar participante por número de identificación" 
-                    style="width: 100%;" (keyup)="identificacion = formatoCampo(identificacion, '0123456789', 10, 2);">
+                    <input pInputText type="text" [(ngModel)]="identificacion"
+                        placeholder="Buscar participante por número de identificación" maxlength="15"
+                        style="width: 100%;" class="p-text-uppercase">
+
                 </span>
             </div>
             <div class="col-md-2"></div>
@@ -20,110 +21,135 @@
         <div class="row" style="margin-top: 50px !important;">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <button type="button" label="Nuevo Participante" pButton icon="pi pi-plus-circle" iconPos="right" (click)="verificarIdentificacion()"></button>
+                <button type="button" label="Nuevo Participante" pButton icon="pi pi-plus-circle" iconPos="right"
+                    (click)="verificarIdentificacion()"></button>
             </div>
             <div class="col-md-2"></div>
         </div>
     </div>
     <ng-template pTemplate="footer">
-        
+
     </ng-template>
 </p-card>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Agregar Participante</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">       
-        <div class="p-col-12">
-            <div class="p-fluid p-formgrid p-grid">
-                <div class="p-field p-col-4">
-                    <label for="period"><b>Tipo de Identificación</b></label>
-                    <p-dropdown [options]="list_academic_period" optionLabel="name"
-                        placeholder="Seleccione el tipo de identificación" ></p-dropdown>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Participante</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-6">
+                            <label for="period"><b>Tipo de Identificación</b></label>
+                            <p-dropdown [options]="list_identification_types" optionLabel="name" [(ngModel)]="tipoIdentificacionSeleccionado" 
+                                placeholder="Seleccione el tipo de identificación"></p-dropdown>
+                        </div>
+                        <div class="p-field p-col-6">
+                            <label><b>Numero de Identificación</b></label>
+                            <input type="text" pInputText placeholder="Ingrese el numero de identificación" [(ngModel)]="usuario.identification" disabled
+                                maxlength="15" class="p-text-uppercase">
+                        </div>
+                    </div>
                 </div>
-                <div class="p-field p-col-4">
-                    <label><b>Numero de Identificación</b></label>
-                    <input type="text" pInputText placeholder="Ingrese el numero de identificación"
-                      class="p-text-uppercase">
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-3">
+                            <label for="name"><b>Primer Nombre</b></label>
+                            <input id="name" type="text" pInputText placeholder="Ingrese el primer nombre"
+                                [(ngModel)]="usuario.first_name" class="p-text-uppercase"
+                                (keyup)="usuario.first_name = formatoCampo(usuario.first_name, 'abcdefghijklmnñopqrstuvwxyzáéíóúÁÉÍÓÚABCDEFGHIJKLMNÑOPQRSTUVWXYZ ', 20, 2);">
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="name"><b>Segundo Nombre</b></label>
+                            <input id="name" type="text" pInputText placeholder="Ingrese el segundo nombre"
+                                [(ngModel)]="usuario.second_name" class="p-text-uppercase"
+                                (keyup)="usuario.second_name = formatoCampo(usuario.second_name, 'abcdefghijklmnñopqrstuvwxyzáéíóúÁÉÍÓÚABCDEFGHIJKLMNÑOPQRSTUVWXYZ ', 20, 2);">
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="name"><b>Primer Apellido</b></label>
+                            <input id="name" type="text" pInputText placeholder="Ingrese el primer apellido"
+                                [(ngModel)]="usuario.first_lastname" class="p-text-uppercase"
+                                (keyup)="usuario.first_lastname = formatoCampo(usuario.first_lastname, 'abcdefghijklmnñopqrstuvwxyzáéíóúÁÉÍÓÚABCDEFGHIJKLMNÑOPQRSTUVWXYZ ', 20, 2);">
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="name"><b>Segundo Apellido</b></label>
+                            <input id="name" type="text" pInputText placeholder="Ingrese el segundo apellido"
+                                [(ngModel)]="usuario.second_lastname" class="p-text-uppercase"
+                                (keyup)="usuario.second_lastname = formatoCampo(usuario.second_lastname, 'abcdefghijklmnñopqrstuvwxyzáéíóúÁÉÍÓÚABCDEFGHIJKLMNÑOPQRSTUVWXYZ ', 20, 2);">
+                        </div>
+                    </div>
                 </div>
-                <div class="p-field p-col-4">
-                    <label for="name"><b>Primer Nombre</b></label>
-                    <input id="name" type="text" pInputText placeholder="Ingrese el primer nombre"
-                        class="p-text-uppercase">
-                </div>                       
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-6">
+                            <label><b>Correo Eléctronico Personal</b></label>
+                            <input type="email" [(ngModel)]="usuario.personal_email" pInputText placeholder="Ingrese su correo eléctronico personal">
+                        </div>
+                        <div class="p-field p-col-6">
+                            <label><b>Correo Eléctronico Empresarial</b></label>
+                            <input type="email" [(ngModel)]="usuario.email" pInputText placeholder="Ingrese su correo eléctronico empresarial">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-6">
+                            <label><b>Fecha de Nacimiento</b></label>
+                            <p-calendar dateFormat="yy-mm-dd" [(ngModel)]="usuario.birthdate"
+                                placeholder="Ingrese la fecha de nacimiento"></p-calendar>
+                        </div>
+                        <div class="p-field p-col-6">
+                            <label for="sex"><b>Tipo de Participante</b></label>
+                            <p-dropdown [options]="list_participants_type" optionLabel="name" [(ngModel)]="tipoParticipanteSeleccionado" 
+                                placeholder="Seleccione el tipo de participante"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-3">
+                            <label for="sex"><b>Tipo de Sexo</b></label>
+                            <p-dropdown [options]="list_sexs" optionLabel="name" [(ngModel)]="tipoSexoSeleccionado" 
+                                placeholder="Seleccione el tipo de sexo"></p-dropdown>
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="period"><b>Tipo de Género</b></label>
+                            <p-dropdown [options]="list_genders" optionLabel="name" [(ngModel)]="tipoGeneroSeleccionado" 
+                                placeholder="Seleccione el tipo de género"></p-dropdown>
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="period"><b>Tipo Sanguineo</b></label>
+                            <p-dropdown [options]="list_blood_types" optionLabel="name" [(ngModel)]="tipoSanguineoSeleccionado" 
+                                placeholder="Seleccione el tipo de género"></p-dropdown>
+                        </div>
+                        <div class="p-field p-col-3">
+                            <label for="period"><b>Tipo de Etnia</b></label>
+                            <p-dropdown [options]="list_ethnic_origins" optionLabel="name" [(ngModel)]="tipoEtniaSeleccionada"
+                                placeholder="Seleccione el tipo de etnia"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12">
+                            <label><b>Dirección Domiciliaria</b></label>
+                            <input type="text" pInputText placeholder="Ingrese la dirección domiciliaria" maxlength="50" [(ngModel)]="usuario.address"
+                                class="p-text-uppercase">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="guardarParticipante()">Guardar</button>
             </div>
         </div>
-        <div class="p-col-12">
-            <div class="p-fluid p-formgrid p-grid">
-                <div class="p-field p-col-4">
-                    <label for="name"><b>Segundo Nombre</b></label>
-                    <input id="name" type="text" pInputText placeholder="Ingrese el segundo nombre"
-                        class="p-text-uppercase">
-                </div>
-                <div class="p-field p-col-4">
-                    <label for="name"><b>Primer Apellido</b></label>
-                    <input id="name" type="text" pInputText placeholder="Ingrese el primer apellido"
-                        class="p-text-uppercase">
-                </div>
-                <div class="p-field p-col-4">
-                    <label for="name"><b>Segundo Apellido</b></label>
-                    <input id="name" type="text" pInputText placeholder="Ingrese el segundo apellido"
-                        class="p-text-uppercase">
-                </div>               
-            </div>
-        </div>
-        <div class="p-col-12">
-            <div class="p-fluid p-formgrid p-grid">
-                <div class="p-field p-col-4">
-                    <label for="period"><b>Tipo de Género</b></label>
-                    <p-dropdown [options]="list_academic_period" optionLabel="name"
-                        placeholder="Seleccione el tipo de género" ></p-dropdown>
-                </div>
-                <div class="p-field p-col-4">
-                    <label for="period"><b>Tipo de Etnia</b></label>
-                    <p-dropdown [options]="list_academic_period" optionLabel="name"
-                        placeholder="Seleccione el tipo de etnia" ></p-dropdown>
-                </div>
-                <div class="p-field p-col-4">
-                    <label><b>Dirección Domiciliaria</b></label>
-                    <input type="text" pInputText placeholder="Ingrese la dirección domiciliaria"
-                      class="p-text-uppercase">
-                </div>                                     
-            </div>
-        </div>
-        <div class="p-col-12">
-            <div class="p-fluid p-formgrid p-grid">               
-               <div class="p-field p-col-4">
-                    <label><b>Correo Eléctronico</b></label>
-                    <input type="text" pInputText placeholder="Ingrese su correo eléctronico"
-                      class="p-text-uppercase">
-                </div>   
-                <div class="p-field p-col-4">
-                    <label><b>Nombre de Usuario</b></label>
-                    <input type="text" pInputText placeholder="Ingrese su nombre de usuario"
-                      class="p-text-uppercase">
-                </div>   
-                <div class="p-field p-col-4">
-                    <label><b>Fecha de Nacimiento</b></label>
-                    <p-calendar 
-                    (ngModelChange)="validarFecha()" dateFormat="yy-mm-dd"
-                    placeholder="Ingrese la fecha de nacimiento"></p-calendar>
-                </div>                               
-            </div>
-        </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" 
-          data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary" (click)="guardarParticipante()">Guardar</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>

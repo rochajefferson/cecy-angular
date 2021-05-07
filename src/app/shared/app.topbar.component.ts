@@ -210,7 +210,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 						<li #profile class=" topbar-item profile-item" [ngClass]="{'active-topmenuitem': app.activeTopbarItem === profile}">
 							<a href="#" (click)="app.onTopbarItemClick($event,profile)">
                             <span class="profile-image-wrapper">
-                                <img [src]="urlAvatar" alt="avatar" style="border-radius: 50%;"/>
+                                <img src="assets/layout/images/login/authority2.png" alt="avatar" style="border-radius: 50%;"/>
                             </span>
 								<span class="profile-info-wrapper">
                                 <h3>{{user.first_name}} {{user.first_lastname}}</h3>
@@ -225,7 +225,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 										<img src="assets/layout/images/topbar/asset-bars.svg" alt="mirage-layout"/>
 									</div>
 									<div class="profile" routerLink="/profile">
-										<img [src]="urlAvatar" alt="avatar" style="border-radius: 50%;" width="40"/>
+										<img src="assets/layout/images/login/authority2.png" alt="avatar" style="border-radius: 50%;" width="40"/>
 										<h1>{{user.first_name}} {{user.first_lastname}}</h1>
 										<span>{{role.name}}</span>
 									</div>
@@ -276,7 +276,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 							[ngClass]="{'active-topmenuitem': app.activeTopbarItem === mobileProfile}">
 							<a href="#" (click)="app.onTopbarItemClick($event,mobileProfile)">
                             <span class="profile-image-wrapper">
-                                <img [src]="urlAvatar" alt="avatar" style="border-radius: 50%;"/>
+                                <img src="assets/layout/images/login/authority2.png" alt="avatar" style="border-radius: 50%;"/>
                             </span>
 								<span class="profile-info-wrapper">
                                 <h3>{{user.first_name}} {{user.first_lastname}}</h3>
@@ -291,7 +291,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 									</div>
 									<!-- Perfil Mobile -->
 									<div class="profile" routerLink="/profile">
-										<img [src]="urlAvatar" alt="avatar" width="45"/>
+										<img src="assets/layout/images/login/authority2.png" alt="avatar" width="45"/>
 										<h1>{{user.first_name}} {{user.first_lastname}}</h1>
 										<span>{{role.name}}</span>
 									</div>

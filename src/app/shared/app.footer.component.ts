@@ -7,7 +7,7 @@ import {environment} from '../../environments/environment';
     template: `
 		<div class="layout-footer">
 			<div class="logo-text">
-				<img [src]="STORAGE_URL+institution.logo" alt="mirage-layout"/>
+				<img src="assets/layout/images/logo-mirage@2x.png" alt="mirage-layout"/>
 				<div class="text">
 					<h1 class="hide">&reg; {{institution.denomination}} {{institution.name}}</h1>
 					<span> &copy;
